@@ -1,5 +1,6 @@
 import { Rooms } from './rooms'
 import { sprites as Sprites } from './sprites'
+import { mobs as Mobs } from './mobs'
 
 export const RoomBundleItems = Rooms.flatMap((room) =>
   room.bundles.flatMap((bundle) =>
@@ -9,4 +10,4 @@ export const RoomBundleItems = Rooms.flatMap((room) =>
 
 export type RoomBundleItem = (typeof RoomBundleItems)[0]
 
-export { Sprites }
+export { Sprites, Mobs }

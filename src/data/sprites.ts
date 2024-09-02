@@ -1,3 +1,5 @@
+import type { Sprite } from './types'
+
 export const sprites = {
   '2500g': {
     name: '2,500g',
@@ -55,7 +57,7 @@ export const sprites = {
   bigCoop: {
     name: 'Big Coop',
     image:
-      'https://stardewvalleywiki.com/mediawiki/images/thumb/8/8e/Big_Coop.png/192px-Big_Coop.png'
+      'https://stardewvalleywiki.com/mediawiki/images/thumb/d/d5/Big_Coop.png/192px-Big_Coop.png'
   },
   barn: {
     name: 'Barn',
@@ -537,11 +539,11 @@ export const sprites = {
   },
   purpleSlime: {
     name: 'Purple Slime',
-    image: 'https://stardewvalleywiki.com/mediawiki/images/3/3f/Purple_Slime.png'
+    image: 'https://stardewvalleywiki.com/mediawiki/images/2/27/Purple_Slime.png'
   },
   preservesJar: {
     name: 'Preserves Jar',
-    image: 'https://stardewvalleywiki.com/mediawiki/images/8/89/Caviar.png'
+    image: 'https://stardewvalleywiki.com/mediawiki/images/1/1e/Preserves_Jar.png'
   },
   quartz: {
     name: 'Quartz',
@@ -605,7 +607,7 @@ export const sprites = {
   },
   shadowBrute: {
     name: 'Shadow Brute',
-    image: 'https://stardewvalleywiki.com/File:Shadow_Brute_Anim.gif'
+    image: 'https://stardewvalleywiki.com/mediawiki/images/8/85/Shadow_Brute_Anim.gif'
   },
   shadowShaman: {
     name: 'Shadow Shaman',
@@ -748,7 +750,7 @@ export const sprites = {
     image: 'https://stardewvalleywiki.com/mediawiki/images/5/52/Yam.png'
   }
 }
-
+export type SpriteType = Omit<Sprite, 'id'>
 export type SpriteKeyType = keyof typeof sprites
 
 export const spriteKeys = Object.keys(sprites).reduce(

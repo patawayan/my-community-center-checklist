@@ -1,3 +1,4 @@
+import type { MobKeyType } from './mobs'
 import type { SpriteKeyType } from './sprites'
 
 export type Maybe<T> = T | null
@@ -23,7 +24,7 @@ export type Scalars = {
 
 export type Animal = {
   __typename?: 'Animal'
-  location: Scalars['String']['output']
+  location: SpriteKeyType
   spriteId: SpriteKeyType
 }
 
@@ -40,7 +41,8 @@ export type ArtisanGoods = {
 export type Bundle = {
   __typename?: 'Bundle'
   items: Array<BundleItem>
-  name: Scalars['String']['output']
+  name: BundleTypes
+  required: Scalars['Int']['output']
 }
 
 export type BundleItem = {
@@ -76,7 +78,7 @@ export type Combat = {
 
 export type Cooking = {
   __typename?: 'Cooking'
-  ingredients: Array<Scalars['String']['output']>
+  ingredients: Array<SpriteKeyType>
 }
 
 export type CrabPot = {
@@ -92,8 +94,8 @@ export enum CrabPotSource {
 export type EquipmentMaterialSource = {
   __typename?: 'EquipmentMaterialSource'
   any?: Maybe<Scalars['String']['output']>
-  equipment: Scalars['String']['output']
-  material?: Maybe<Array<Scalars['String']['output']>>
+  equipment: SpriteKeyType
+  material?: Maybe<Array<SpriteKeyType>>
 }
 
 export type Farming = {
@@ -117,7 +119,7 @@ export enum FishingLocation {
   River = 'River',
   SecretWoods = 'Secret Woods',
   Sewer = 'Sewer',
-  WitchsSwamp = 'Witchs Swamp'
+  WitchsSwamp = "Witch's Swamp"
 }
 
 export type Foraging = {
@@ -173,7 +175,7 @@ export type MobCaveLocation = {
 export type MobFloorChance = {
   __typename?: 'MobFloorChance'
   chance?: Maybe<Scalars['Int']['output']>
-  mobId: SpriteKeyType
+  mobId: MobKeyType
 }
 
 export type MobLocation = {
@@ -194,10 +196,91 @@ export enum Quality {
   Silver = 'Silver'
 }
 
+export enum AbandonedJojaMartBundles {
+  TheMissingBundle = 'The Missing Bundle'
+}
+
+export enum BoilerRoomBundles {
+  BlacksmithsBundle = "Blacksmith's Bundle",
+  GeologistsBundle = "Geologist's Bundle",
+  AdventurersBundle = "Adventurer's Bundle"
+}
+
+export enum BulletinBoardBundles {
+  ChefsBundle = "Chef's Bundle",
+  DyeBundle = 'Dye Bundle',
+  FieldResearchBundle = 'Field Research Bundle',
+  FodderBundle = 'Fodder Bundle',
+  EnchantersBundle = "Enchanter's Bundle"
+}
+
+export enum CraftsRoomBundles {
+  SpringForagingBundle = 'Spring Foraging Bundle',
+  SummerForagingBundle = 'Summer Foraging Bundle',
+  FallForagingBundle = 'Fall Foraging Bundle',
+  WinterForagingBundle = 'Winter Foraging Bundle',
+  ConstructionBundle = 'Construction Bundle',
+  ExoticForagingBundle = 'Exotic Foraging Bundle'
+}
+
+export enum FishTankBundles {
+  RiverFishBundle = 'River Fish Bundle',
+  LakeFishBundle = 'Lake Fish Bundle',
+  OceanFishBundle = 'Ocean Fish Bundle',
+  NightFishBundle = 'Night Fish Bundle',
+  CrabPotBundle = 'Crab Pot Bundle',
+  SpecialtyFishBundle = 'Specialty Fish Bundle'
+}
+
+export enum PantryBundles {
+  SpringCropsBundle = 'Spring Crops Bundle',
+  SummerCropsBundle = 'Summer Crops Bundle',
+  FallCropsBundle = 'Fall Crops Bundle',
+  QualityCropsBundle = 'Quality Crops Bundle',
+  AnimalBundle = 'Animal Bundle',
+  ArtisanBundle = 'Artisan Bundle'
+}
+
+export enum VaultBundles {
+  '2,500 Bundle' = '2,500 Bundle',
+  '5,000 Bundle' = '5,000 Bundle',
+  '10,000 Bundle' = '10,000 Bundle',
+  '25,000 Bundle' = '25,000 Bundle'
+}
+
+export enum RoomTypes {
+  CraftsRoom = 'Crafts Room',
+  Pantry = 'Pantry',
+  FishTank = 'Fish Tank',
+  BoilerRoom = 'Boiler Room',
+  BulletinBoard = 'Bulletin Board',
+  Vault = 'Vault',
+  AbandonedJojaMart = 'Abandoned JojaMart'
+}
+
+export type BundleTypes =
+  | AbandonedJojaMartBundles
+  | BoilerRoomBundles
+  | BulletinBoardBundles
+  | CraftsRoomBundles
+  | FishTankBundles
+  | PantryBundles
+  | VaultBundles
+
+export const RoomBundleMap = {
+  [RoomTypes.CraftsRoom]: CraftsRoomBundles,
+  [RoomTypes.Pantry]: PantryBundles,
+  [RoomTypes.FishTank]: FishTankBundles,
+  [RoomTypes.BoilerRoom]: BoilerRoomBundles,
+  [RoomTypes.BulletinBoard]: BulletinBoardBundles,
+  [RoomTypes.Vault]: VaultBundles,
+  [RoomTypes.AbandonedJojaMart]: AbandonedJojaMartBundles
+}
+
 export type Room = {
   __typename?: 'Room'
   bundles: Array<Bundle>
-  name: Scalars['String']['output']
+  name: RoomTypes
   reward: RoomReward
 }
 

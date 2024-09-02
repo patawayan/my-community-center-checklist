@@ -1,5 +1,12 @@
 import { items, type BundleItemBare } from '../items'
-import { Quality, RoomReward, type Bundle, type Room } from '../types'
+import {
+  AbandonedJojaMartBundles,
+  Quality,
+  RoomReward,
+  RoomTypes,
+  type Bundle,
+  type Room
+} from '../types'
 
 const TheMissingBundle: BundleItemBare[] = [
   {
@@ -28,7 +35,8 @@ const TheMissingBundle: BundleItemBare[] = [
 
 const AbandonedJojaMartBundle: Bundle[] = [
   {
-    name: 'The Missing Bundle',
+    name: AbandonedJojaMartBundles.TheMissingBundle,
+    required: 5,
     items: TheMissingBundle.map((item, index) => ({
       id: `theMissing-${index}`,
       ...item
@@ -37,7 +45,7 @@ const AbandonedJojaMartBundle: Bundle[] = [
 ]
 
 export const AbandonedJojaMart: Room = {
-  name: 'Abandoned JojaMart',
+  name: RoomTypes.AbandonedJojaMart,
   bundles: AbandonedJojaMartBundle,
   reward: RoomReward.MovieTheater
 }

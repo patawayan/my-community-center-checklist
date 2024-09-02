@@ -1,5 +1,5 @@
 import { items, type BundleItemBare } from '../items'
-import { RoomReward, type Bundle, type Room } from '../types'
+import { CraftsRoomBundles, RoomReward, RoomTypes, type Bundle, type Room } from '../types'
 
 const SpringForagingBundle: BundleItemBare[] = [
   {
@@ -105,42 +105,48 @@ const ExoticForagingBundle: BundleItemBare[] = [
 
 const CraftsRoomBundle: Bundle[] = [
   {
-    name: 'Spring Foraging Bundle',
+    name: CraftsRoomBundles.SpringForagingBundle,
+    required: 4,
     items: SpringForagingBundle.map((item, index) => ({
       id: `springForagingBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Summer Foraging Bundle',
+    name: CraftsRoomBundles.SummerForagingBundle,
+    required: 3,
     items: SummerForagingBundle.map((item, index) => ({
       id: `summerForagingBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Fall Foraging Bundle',
+    name: CraftsRoomBundles.FallForagingBundle,
+    required: 4,
     items: FallForagingBundle.map((item, index) => ({
       id: `fallForagingBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Winter Foraging Bundle',
+    name: CraftsRoomBundles.WinterForagingBundle,
+    required: 4,
     items: WinterForagingBundle.map((item, index) => ({
       id: `winterForagingBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Construction Bundle',
+    name: CraftsRoomBundles.ConstructionBundle,
+    required: 3,
     items: ConstructionBundle.map((item, index) => ({
       id: `constructionBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Exotic Foraging Bundle',
+    name: CraftsRoomBundles.ExoticForagingBundle,
+    required: 5,
     items: ExoticForagingBundle.map((item, index) => ({
       id: `exoticForagingBundle-${index}`,
       ...item
@@ -149,7 +155,7 @@ const CraftsRoomBundle: Bundle[] = [
 ]
 
 export const CraftsRoom: Room = {
-  name: 'Crafts Room',
+  name: RoomTypes.CraftsRoom,
   bundles: CraftsRoomBundle,
   reward: RoomReward.BridgeRepair
 }

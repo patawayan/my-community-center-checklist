@@ -1,5 +1,5 @@
 import { items, type BundleItemBare } from '../items'
-import { RoomReward, type Bundle, type Room } from '../types'
+import { RoomReward, RoomTypes, VaultBundles, type Bundle, type Room } from '../types'
 
 const g2500Bundle: BundleItemBare[] = [
   {
@@ -27,28 +27,32 @@ const g25000Bundle: BundleItemBare[] = [
 
 const VaultBundle: Bundle[] = [
   {
-    name: '2,500 Bundle',
+    name: VaultBundles['2,500 Bundle'],
+    required: 1,
     items: g2500Bundle.map((item, index) => ({
       id: `2500GBundle-${index}`,
       ...item
     }))
   },
   {
-    name: '5,000 Bundle',
+    name: VaultBundles['5,000 Bundle'],
+    required: 1,
     items: g5000Bundle.map((item, index) => ({
       id: `5000GBundle-${index}`,
       ...item
     }))
   },
   {
-    name: '10,000 Bundle',
+    name: VaultBundles['10,000 Bundle'],
+    required: 1,
     items: g10000Bundle.map((item, index) => ({
       id: `10000GBundle-${index}`,
       ...item
     }))
   },
   {
-    name: '25,000 Bundle',
+    name: VaultBundles['25,000 Bundle'],
+    required: 1,
     items: g25000Bundle.map((item, index) => ({
       id: `25000GBundle-${index}`,
       ...item
@@ -57,7 +61,7 @@ const VaultBundle: Bundle[] = [
 ]
 
 export const Vault: Room = {
-  name: 'Vault',
+  name: RoomTypes.Vault,
   bundles: VaultBundle,
   reward: RoomReward.MinecartsRepaired
 }

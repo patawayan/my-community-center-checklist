@@ -1,8 +1,10 @@
 <script lang="ts">
-const buttonSizes: Record<string, string> = {
+const buttonSizes: Record<string, textSizes> = {
   md: 'xl',
   sm: 'md'
 }
+
+type textSizes = 'xl' | 'md' | 'sm' | '2xl' | 'xs'
 
 const buttonType: Record<string, string> = {
   primary: 'bg-brown-400 text-brown-500',
@@ -35,7 +37,11 @@ defineProps({
 </script>
 
 <template>
-  <button @click="$emit('click')" :class="['p-2 text-2 pixel-shadow', buttonType[type]]">
+  <button
+    @click="$emit('click')"
+    @keydown.enter="$emit('click')"
+    :class="['p-2 text-2 pixel-shadow', buttonType[type]]"
+  >
     <PixelText :size="buttonSizes[size]"><slot></slot></PixelText>
   </button>
 </template>

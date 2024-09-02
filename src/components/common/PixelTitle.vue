@@ -12,18 +12,25 @@ export default {}
 </script>
 
 <script setup lang="ts">
+import type { PropType } from 'vue'
+
 defineProps({
   size: {
     default: 'md',
-    validator(value) {
+    type: String as PropType<keyof typeof titleSizes>,
+    validator(value: string) {
       return Object.keys(titleSizes).includes(value)
     }
+  },
+  noShadow: {
+    default: false,
+    type: Boolean
   }
 })
 </script>
 
 <template>
-  <h1 :class="['font-bold pixel-text-shadow', titleSizes[size]]">
+  <h1 :class="['font-bold', titleSizes[size], noShadow ? '' : 'pixel-text-shadow']">
     <slot></slot>
   </h1>
 </template>

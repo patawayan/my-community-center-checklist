@@ -1,5 +1,5 @@
 import { items, type BundleItemBare } from '../items'
-import { RoomReward, type Bundle, type Room } from '../types'
+import { BoilerRoomBundles, RoomReward, RoomTypes, type Bundle, type Room } from '../types'
 
 const BlacksmithsBundle: BundleItemBare[] = [
   {
@@ -47,21 +47,24 @@ const AdventurersBundle: BundleItemBare[] = [
 
 const BoilerRoomBundle: Bundle[] = [
   {
-    name: "Blacksmith's Bundle",
+    name: BoilerRoomBundles.BlacksmithsBundle,
+    required: 3,
     items: BlacksmithsBundle.map((item, index) => ({
       id: `blacksmithsBundle-${index}`,
       ...item
     }))
   },
   {
-    name: "Geologist's Bundle",
+    name: BoilerRoomBundles.GeologistsBundle,
+    required: 4,
     items: GeologistsBundle.map((item, index) => ({
       id: `geologistsBundle-${index}`,
       ...item
     }))
   },
   {
-    name: "Adventurer's Bundle",
+    name: BoilerRoomBundles.AdventurersBundle,
+    required: 2,
     items: AdventurersBundle.map((item, index) => ({
       id: `adventurersBundle-${index}`,
       ...item
@@ -70,7 +73,7 @@ const BoilerRoomBundle: Bundle[] = [
 ]
 
 export const BoilerRoom: Room = {
-  name: 'Boiler Room',
+  name: RoomTypes.BoilerRoom,
   bundles: BoilerRoomBundle,
   reward: RoomReward.MinecartsRepaired
 }

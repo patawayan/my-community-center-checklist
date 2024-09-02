@@ -1,5 +1,5 @@
 import { items, type BundleItemBare } from '../items'
-import { Quality, RoomReward, type Bundle, type Room } from '../types'
+import { PantryBundles, Quality, RoomReward, RoomTypes, type Bundle, type Room } from '../types'
 
 const SpringCropsBundle: BundleItemBare[] = [
   {
@@ -131,42 +131,48 @@ const ArtisanBundle: BundleItemBare[] = [
 
 const PantryBundle: Bundle[] = [
   {
-    name: 'Spring Crops Bundle',
+    name: PantryBundles.SpringCropsBundle,
+    required: 4,
     items: SpringCropsBundle.map((item, index) => ({
       id: `springCropsBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Summer Crops Bundle',
+    name: PantryBundles.SummerCropsBundle,
+    required: 4,
     items: SummerCropsBundle.map((item, index) => ({
       id: `summerCropsBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Fall Crops Bundle',
+    name: PantryBundles.FallCropsBundle,
+    required: 4,
     items: FallCropsBundle.map((item, index) => ({
       id: `fallCropsBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Quality Crops Bundle',
+    name: PantryBundles.QualityCropsBundle,
+    required: 3,
     items: QualityCropsBundle.map((item, index) => ({
       id: `qualityCropsBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Animal Bundle',
+    name: PantryBundles.AnimalBundle,
+    required: 5,
     items: AnimalBundle.map((item, index) => ({
       id: `animalBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Artisan Bundle',
+    name: PantryBundles.ArtisanBundle,
+    required: 6,
     items: ArtisanBundle.map((item, index) => ({
       id: `artisanBundle-${index}`,
       ...item
@@ -175,7 +181,7 @@ const PantryBundle: Bundle[] = [
 ]
 
 export const Pantry: Room = {
-  name: 'Pantry',
+  name: RoomTypes.Pantry,
   bundles: PantryBundle,
   reward: RoomReward.Greenhouse
 }

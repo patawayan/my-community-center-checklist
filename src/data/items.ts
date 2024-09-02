@@ -1,3 +1,4 @@
+import { mobKeys } from './mobs'
 import { spriteKeys, type SpriteKeyType } from './sprites'
 import {
   type BundleItem,
@@ -12,8 +13,6 @@ import {
 } from './types'
 
 export type BundleItemBare = Omit<BundleItem, 'id'>
-
-console.log('ssssppprrrr', spriteKeys)
 
 export const items = {
   '2500g': {
@@ -86,20 +85,20 @@ export const items = {
     spriteId: spriteKeys.apple,
     sourceDetails: [
       {
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
+        sources: [
+          {
+            __typename: 'Foraging',
+            locations: [ForagingLocations.FruitBatFarmCave]
+          }
+        ]
+      },
+      {
         seasons: [Seasons.Fall],
         sources: [
           {
             __typename: 'Farming',
             info: 'Plant before Fall to harvest by Fall.'
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
-        sources: [
-          {
-            __typename: 'Foraging',
-            locations: [ForagingLocations.FruitBatFarmCave]
           }
         ]
       }
@@ -109,20 +108,20 @@ export const items = {
     spriteId: spriteKeys.apricot,
     sourceDetails: [
       {
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
+        sources: [
+          {
+            __typename: 'Foraging',
+            locations: [ForagingLocations.FruitBatFarmCave]
+          }
+        ]
+      },
+      {
         seasons: [Seasons.Spring],
         sources: [
           {
             __typename: 'Farming',
             info: 'Plant before Spring to harvest by Spring.'
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
-        sources: [
-          {
-            __typename: 'Foraging',
-            locations: [ForagingLocations.FruitBatFarmCave]
           }
         ]
       }
@@ -133,7 +132,7 @@ export const items = {
     isNeverSoldTravelCart: true,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Mining',
@@ -154,7 +153,7 @@ export const items = {
     spriteId: spriteKeys.batwing,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Combat',
@@ -163,15 +162,15 @@ export const items = {
                 location: CaveLocationCaves.Mines,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.bat,
+                    mobId: mobKeys.bat,
                     chance: 0.94
                   },
                   {
-                    mobId: spriteKeys.frostBat,
+                    mobId: mobKeys.frostBat,
                     chance: 0.95
                   },
                   {
-                    mobId: spriteKeys.lavaBat,
+                    mobId: mobKeys.lavaBat,
                     chance: 0.97
                   }
                 ]
@@ -180,7 +179,7 @@ export const items = {
                 location: CaveLocationCaves.SkullCavern,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.lavaBat,
+                    mobId: mobKeys.lavaBat,
                     chance: 0.97
                   }
                 ]
@@ -199,19 +198,19 @@ export const items = {
     spriteId: spriteKeys.blackberry,
     sourceDetails: [
       {
-        seasons: [Seasons.Fall],
-        sources: [
-          {
-            __typename: 'Foraging'
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Foraging',
             locations: [ForagingLocations.FruitBatFarmCave]
+          }
+        ]
+      },
+      {
+        seasons: [Seasons.Fall],
+        sources: [
+          {
+            __typename: 'Foraging'
           }
         ]
       }
@@ -234,13 +233,14 @@ export const items = {
     spriteId: spriteKeys.bream,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Fishing',
             locations: [FishingLocation.River],
             time: {
-              starting: 18
+              starting: 18,
+              ending: 2
             }
           }
         ]
@@ -251,7 +251,7 @@ export const items = {
     spriteId: spriteKeys.bullhead,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Fishing',
@@ -265,7 +265,7 @@ export const items = {
     spriteId: spriteKeys.cactusFruit,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Foraging',
@@ -283,20 +283,20 @@ export const items = {
     spriteId: spriteKeys.carp,
     sourceDetails: [
       {
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
+        sources: [
+          {
+            __typename: 'Fishing',
+            locations: [FishingLocation.SecretWoods, FishingLocation.Sewer]
+          }
+        ]
+      },
+      {
         seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall],
         sources: [
           {
             __typename: 'Fishing',
             locations: [FishingLocation.MountainLake]
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
-        sources: [
-          {
-            __typename: 'Fishing',
-            locations: [FishingLocation.SecretWoods, FishingLocation.Sewer]
           }
         ]
       }
@@ -356,7 +356,7 @@ export const items = {
     spriteId: spriteKeys.caveCarrot,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Foraging',
@@ -370,7 +370,7 @@ export const items = {
     spriteId: spriteKeys.caviar,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'ArtisanGoods',
@@ -389,7 +389,7 @@ export const items = {
     spriteId: spriteKeys.cheese,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'ArtisanGoods',
@@ -412,20 +412,20 @@ export const items = {
     spriteId: spriteKeys.cherry,
     sourceDetails: [
       {
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
+        sources: [
+          {
+            __typename: 'Foraging',
+            locations: [ForagingLocations.FruitBatFarmCave]
+          }
+        ]
+      },
+      {
         seasons: [Seasons.Spring],
         sources: [
           {
             __typename: 'Farming',
             info: 'Plant before Spring to harvest by Spring.'
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
-        sources: [
-          {
-            __typename: 'Foraging',
-            locations: [ForagingLocations.FruitBatFarmCave]
           }
         ]
       }
@@ -435,7 +435,7 @@ export const items = {
     spriteId: spriteKeys.chub,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Fishing',
@@ -449,7 +449,7 @@ export const items = {
     spriteId: spriteKeys.clam,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'CrabPot',
@@ -467,7 +467,7 @@ export const items = {
     spriteId: spriteKeys.cloth,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'ArtisanGoods',
@@ -493,7 +493,7 @@ export const items = {
                 location: CaveLocationCaves.SkullCavern,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.mummy,
+                    mobId: mobKeys.mummy,
                     chance: 0.2
                   }
                 ]
@@ -508,7 +508,7 @@ export const items = {
     spriteId: spriteKeys.cockle,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'CrabPot',
@@ -526,7 +526,7 @@ export const items = {
     spriteId: spriteKeys.coconut,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Foraging',
@@ -544,6 +544,15 @@ export const items = {
     spriteId: spriteKeys.commonMushroom,
     sourceDetails: [
       {
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
+        sources: [
+          {
+            __typename: 'Foraging',
+            locations: [ForagingLocations.MushroomFarmCave]
+          }
+        ]
+      },
+      {
         seasons: [Seasons.Fall],
         sources: [
           {
@@ -559,15 +568,6 @@ export const items = {
             locations: [ForagingLocations.SecretWoods]
           }
         ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
-        sources: [
-          {
-            __typename: 'Foraging',
-            locations: [ForagingLocations.MushroomFarmCave]
-          }
-        ]
       }
     ]
   },
@@ -575,7 +575,7 @@ export const items = {
     spriteId: spriteKeys.copperBar,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'ArtisanGoods',
@@ -607,7 +607,7 @@ export const items = {
     spriteId: spriteKeys.crab,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'CrabPot',
@@ -620,11 +620,11 @@ export const items = {
                 location: CaveLocationCaves.Mines,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.rockCrab,
+                    mobId: mobKeys.rockCrab,
                     chance: 0.15
                   },
                   {
-                    mobId: spriteKeys.lavaCrab,
+                    mobId: mobKeys.lavaCrab,
                     chance: 0.25
                   }
                 ]
@@ -639,7 +639,7 @@ export const items = {
     spriteId: spriteKeys.crayfish,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'CrabPot',
@@ -666,15 +666,7 @@ export const items = {
     spriteId: spriteKeys.crystalFruit,
     sourceDetails: [
       {
-        seasons: [Seasons.Winter],
-        sources: [
-          {
-            __typename: 'Foraging'
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Combat',
@@ -683,12 +675,20 @@ export const items = {
                 location: CaveLocationCaves.Mines,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.dustSprite,
+                    mobId: mobKeys.dustSprite,
                     chance: 0.02
                   }
                 ]
               }
             ]
+          }
+        ]
+      },
+      {
+        seasons: [Seasons.Winter],
+        sources: [
+          {
+            __typename: 'Foraging'
           }
         ]
       }
@@ -733,7 +733,7 @@ export const items = {
     isNeverSoldTravelCart: true,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'ArtisanGoods',
@@ -752,7 +752,7 @@ export const items = {
     spriteId: spriteKeys.duckEgg,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'AnimalProducts',
@@ -771,7 +771,7 @@ export const items = {
     spriteId: spriteKeys.duckFeather,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'AnimalProducts',
@@ -791,7 +791,7 @@ export const items = {
     isNeverSoldTravelCart: true,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Mining',
@@ -812,11 +812,11 @@ export const items = {
                 location: CaveLocationCaves.Mines,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.duggy,
+                    mobId: mobKeys.duggy,
                     chance: 0.1
                   },
                   {
-                    mobId: spriteKeys.hauntedSkull,
+                    mobId: mobKeys.hauntedSkull,
                     chance: 0.013
                   }
                 ]
@@ -863,20 +863,20 @@ export const items = {
     spriteId: spriteKeys.fiddleheadFern,
     sourceDetails: [
       {
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
+        sources: [
+          {
+            __typename: 'Foraging',
+            locations: [ForagingLocations.SkullCavern, ForagingLocations.GreenRain]
+          }
+        ]
+      },
+      {
         seasons: [Seasons.Summer],
         sources: [
           {
             __typename: 'Foraging',
             locations: [ForagingLocations.SecretWoods]
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
-        sources: [
-          {
-            __typename: 'Foraging',
-            locations: [ForagingLocations.SkullCavern, ForagingLocations.GreenRain]
           }
         ]
       }
@@ -887,7 +887,7 @@ export const items = {
     isNeverSoldTravelCart: true,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Mining',
@@ -910,16 +910,7 @@ export const items = {
     isNeverSoldTravelCart: true,
     sourceDetails: [
       {
-        seasons: [Seasons.Summer, Seasons.Fall],
-        sources: [
-          {
-            __typename: 'Farming',
-            info: 'Harvested from wheat with a scythe.'
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Foraging',
@@ -928,6 +919,15 @@ export const items = {
           {
             __typename: 'Buying',
             locations: [StoreLocation.DesertTrader, StoreLocation.MarnieRanch]
+          }
+        ]
+      },
+      {
+        seasons: [Seasons.Summer, Seasons.Fall],
+        sources: [
+          {
+            __typename: 'Farming',
+            info: 'Harvested from wheat with a scythe.'
           }
         ]
       }
@@ -950,7 +950,7 @@ export const items = {
     spriteId: spriteKeys.friedEgg,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Cooking',
@@ -965,7 +965,7 @@ export const items = {
     isNeverSoldTravelCart: true,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Mining',
@@ -988,7 +988,7 @@ export const items = {
     isNeverSoldTravelCart: true,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Foraging',
@@ -1001,7 +1001,7 @@ export const items = {
                 location: CaveLocationCaves.Mines,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.dustSprite,
+                    mobId: mobKeys.dustSprite,
                     chance: 0.02
                   }
                 ]
@@ -1016,7 +1016,7 @@ export const items = {
     spriteId: spriteKeys.ghostfish,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Fishing',
@@ -1029,7 +1029,7 @@ export const items = {
                 location: CaveLocationCaves.Mines,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.ghost,
+                    mobId: mobKeys.ghost,
                     chance: 0.08
                   }
                 ]
@@ -1044,7 +1044,7 @@ export const items = {
     spriteId: spriteKeys.goatCheese,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'ArtisanGoods',
@@ -1097,7 +1097,7 @@ export const items = {
     spriteId: spriteKeys.goldBar,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'ArtisanGoods',
@@ -1116,7 +1116,7 @@ export const items = {
     spriteId: spriteKeys.hardwood,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Foraging',
@@ -1147,7 +1147,7 @@ export const items = {
     spriteId: spriteKeys.honey,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'ArtisanGoods',
@@ -1179,7 +1179,7 @@ export const items = {
     spriteId: spriteKeys.ironBar,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'ArtisanGoods',
@@ -1198,7 +1198,7 @@ export const items = {
     spriteId: spriteKeys.jelly,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'ArtisanGoods',
@@ -1217,7 +1217,7 @@ export const items = {
     spriteId: spriteKeys.largeEgg,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'AnimalProducts',
@@ -1236,7 +1236,7 @@ export const items = {
     spriteId: spriteKeys.largeEggBrown,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'AnimalProducts',
@@ -1255,7 +1255,7 @@ export const items = {
     spriteId: spriteKeys.largeGoatMilk,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'AnimalProducts',
@@ -1274,7 +1274,7 @@ export const items = {
     spriteId: spriteKeys.largeMilk,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'AnimalProducts',
@@ -1293,7 +1293,7 @@ export const items = {
     spriteId: spriteKeys.largemouthBass,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Fishing',
@@ -1324,7 +1324,7 @@ export const items = {
     spriteId: spriteKeys.lobster,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'CrabPot',
@@ -1338,7 +1338,7 @@ export const items = {
     spriteId: spriteKeys.makiRoll,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Cooking',
@@ -1352,7 +1352,7 @@ export const items = {
     spriteId: spriteKeys.mapleSyrup,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'ArtisanGoods',
@@ -1384,20 +1384,20 @@ export const items = {
     spriteId: spriteKeys.morel,
     sourceDetails: [
       {
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
+        sources: [
+          {
+            __typename: 'Foraging',
+            locations: [ForagingLocations.MushroomFarmCave]
+          }
+        ]
+      },
+      {
         seasons: [Seasons.Spring],
         sources: [
           {
             __typename: 'Foraging',
             locations: [ForagingLocations.SecretWoods]
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
-        sources: [
-          {
-            __typename: 'Foraging',
-            locations: [ForagingLocations.MushroomFarmCave]
           }
         ]
       }
@@ -1407,7 +1407,7 @@ export const items = {
     spriteId: spriteKeys.mussel,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'CrabPot',
@@ -1439,7 +1439,7 @@ export const items = {
     spriteId: spriteKeys.oakResin,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'ArtisanGoods',
@@ -1457,7 +1457,7 @@ export const items = {
                 location: CaveLocationCaves.Mines,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.hauntedSkull,
+                    mobId: mobKeys.hauntedSkull,
                     chance: 0.013
                   }
                 ]
@@ -1472,20 +1472,20 @@ export const items = {
     spriteId: spriteKeys.orange,
     sourceDetails: [
       {
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
+        sources: [
+          {
+            __typename: 'Foraging',
+            locations: [ForagingLocations.FruitBatFarmCave]
+          }
+        ]
+      },
+      {
         seasons: [Seasons.Summer],
         sources: [
           {
             __typename: 'Farming',
             info: 'Plant before Summer to harvest by Summer.'
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
-        sources: [
-          {
-            __typename: 'Foraging',
-            locations: [ForagingLocations.FruitBatFarmCave]
           }
         ]
       }
@@ -1495,7 +1495,7 @@ export const items = {
     spriteId: spriteKeys.oyster,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'CrabPot',
@@ -1526,20 +1526,20 @@ export const items = {
     spriteId: spriteKeys.peach,
     sourceDetails: [
       {
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
+        sources: [
+          {
+            __typename: 'Foraging',
+            locations: [ForagingLocations.FruitBatFarmCave]
+          }
+        ]
+      },
+      {
         seasons: [Seasons.Summer],
         sources: [
           {
             __typename: 'Farming',
             info: 'Plant before Summer to harvest by Summer.'
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
-        sources: [
-          {
-            __typename: 'Foraging',
-            locations: [ForagingLocations.FruitBatFarmCave]
           }
         ]
       }
@@ -1549,7 +1549,7 @@ export const items = {
     spriteId: spriteKeys.periwinkle,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'CrabPot',
@@ -1563,7 +1563,7 @@ export const items = {
     spriteId: spriteKeys.pineTar,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'ArtisanGoods',
@@ -1582,20 +1582,20 @@ export const items = {
     spriteId: spriteKeys.pomegranate,
     sourceDetails: [
       {
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
+        sources: [
+          {
+            __typename: 'Foraging',
+            locations: [ForagingLocations.FruitBatFarmCave]
+          }
+        ]
+      },
+      {
         seasons: [Seasons.Fall],
         sources: [
           {
             __typename: 'Farming',
             info: 'Plant before Fall to harvest by Fall.'
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
-        sources: [
-          {
-            __typename: 'Foraging',
-            locations: [ForagingLocations.FruitBatFarmCave]
           }
         ]
       }
@@ -1632,7 +1632,7 @@ export const items = {
     isNeverSoldTravelCart: true,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Mining',
@@ -1655,11 +1655,11 @@ export const items = {
                 location: CaveLocationCaves.Mines,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.shadowBrute,
+                    mobId: mobKeys.shadowBrute,
                     chance: 0.0005
                   },
                   {
-                    mobId: spriteKeys.shadowShaman,
+                    mobId: mobKeys.shadowShaman,
                     chance: 0.0005
                   }
                 ]
@@ -1668,11 +1668,11 @@ export const items = {
                 location: CaveLocationCaves.SkullCavern,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.mummy,
+                    mobId: mobKeys.mummy,
                     chance: 0.001
                   },
                   {
-                    mobId: spriteKeys.serpent,
+                    mobId: mobKeys.serpent,
                     chance: 0.001
                   }
                 ]
@@ -1719,7 +1719,7 @@ export const items = {
     spriteId: spriteKeys.purpleMushroom,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Foraging',
@@ -1734,7 +1734,7 @@ export const items = {
     isNeverSoldTravelCart: true,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Mining',
@@ -1752,7 +1752,7 @@ export const items = {
     spriteId: spriteKeys.rabbitsFoot,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'AnimalProducts',
@@ -1770,7 +1770,7 @@ export const items = {
                 location: CaveLocationCaves.Mines,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.serpent,
+                    mobId: mobKeys.serpent,
                     chance: 0.008
                   }
                 ]
@@ -1785,16 +1785,7 @@ export const items = {
     spriteId: spriteKeys.redCabbage,
     sourceDetails: [
       {
-        seasons: [Seasons.Summer],
-        sources: [
-          {
-            __typename: 'Farming',
-            info: 'Seeds are available in the General Store in Year 2+.'
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Combat',
@@ -1804,20 +1795,29 @@ export const items = {
                 location: CaveLocationCaves.SkullCavern,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.mummy,
+                    mobId: mobKeys.mummy,
                     chance: 0.002
                   },
                   {
-                    mobId: spriteKeys.purpleSlime,
+                    mobId: mobKeys.purpleSlime,
                     chance: 0.00125
                   },
                   {
-                    mobId: spriteKeys.serpent,
+                    mobId: mobKeys.serpent,
                     chance: 0.002
                   }
                 ]
               }
             ]
+          }
+        ]
+      },
+      {
+        seasons: [Seasons.Summer],
+        sources: [
+          {
+            __typename: 'Farming',
+            info: 'Seeds are available in the General Store in Year 2+.'
           }
         ]
       }
@@ -1827,20 +1827,20 @@ export const items = {
     spriteId: spriteKeys.redMushroom,
     sourceDetails: [
       {
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
+        sources: [
+          {
+            __typename: 'Foraging',
+            locations: [ForagingLocations.Mines, ForagingLocations.MushroomFarmCave]
+          }
+        ]
+      },
+      {
         seasons: [Seasons.Summer, Seasons.Fall],
         sources: [
           {
             __typename: 'Foraging',
             locations: [ForagingLocations.SecretWoods]
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
-        sources: [
-          {
-            __typename: 'Foraging',
-            locations: [ForagingLocations.Mines, ForagingLocations.MushroomFarmCave]
           }
         ]
       }
@@ -1869,7 +1869,7 @@ export const items = {
     spriteId: spriteKeys.sandfish,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Fishing',
@@ -1905,7 +1905,7 @@ export const items = {
     spriteId: spriteKeys.seaUrchin,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Foraging',
@@ -1939,11 +1939,11 @@ export const items = {
     spriteId: spriteKeys.shrimp,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
-            __typename: 'Fishing',
-            locations: [FishingLocation.Ocean]
+            __typename: 'CrabPot',
+            location: CrabPotSource.Ocean
           }
         ]
       }
@@ -1953,7 +1953,7 @@ export const items = {
     spriteId: spriteKeys.slime,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Combat',
@@ -1962,7 +1962,7 @@ export const items = {
                 location: CaveLocationCaves.Mines,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.slime
+                    mobId: mobKeys.slime
                   }
                 ]
               }
@@ -1976,7 +1976,7 @@ export const items = {
     spriteId: spriteKeys.snail,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'CrabPot',
@@ -2003,7 +2003,7 @@ export const items = {
     spriteId: spriteKeys.solarEssence,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Combat',
@@ -2012,15 +2012,15 @@ export const items = {
                 location: CaveLocationCaves.Mines,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.ghost,
+                    mobId: mobKeys.ghost,
                     chance: 0.95
                   },
                   {
-                    mobId: spriteKeys.squidKid,
+                    mobId: mobKeys.squidKid,
                     chance: 0.75
                   },
                   {
-                    mobId: spriteKeys.metalHead,
+                    mobId: mobKeys.metalHead,
                     chance: 0.65
                   }
                 ]
@@ -2029,11 +2029,11 @@ export const items = {
                 location: CaveLocationCaves.SkullCavern,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.mummy,
+                    mobId: mobKeys.mummy,
                     chance: 0.99
                   },
                   {
-                    mobId: spriteKeys.iridiumBat,
+                    mobId: mobKeys.iridiumBat,
                     chance: 0.5
                   }
                 ]
@@ -2052,19 +2052,19 @@ export const items = {
     spriteId: spriteKeys.spiceBerry,
     sourceDetails: [
       {
-        seasons: [Seasons.Summer],
-        sources: [
-          {
-            __typename: 'Foraging'
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Foraging',
             locations: [ForagingLocations.FruitBatFarmCave]
+          }
+        ]
+      },
+      {
+        seasons: [Seasons.Summer],
+        sources: [
+          {
+            __typename: 'Foraging'
           }
         ]
       }
@@ -2074,7 +2074,7 @@ export const items = {
     spriteId: spriteKeys.stone,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Foraging'
@@ -2203,7 +2203,7 @@ export const items = {
     spriteId: spriteKeys.truffle,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'AnimalProducts',
@@ -2222,7 +2222,7 @@ export const items = {
     spriteId: spriteKeys.truffleOil,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'ArtisanGoods',
@@ -2259,7 +2259,7 @@ export const items = {
     spriteId: spriteKeys.voidEssence,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Combat',
@@ -2268,11 +2268,11 @@ export const items = {
                 location: CaveLocationCaves.Mines,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.shadowBrute,
+                    mobId: mobKeys.shadowBrute,
                     chance: 0.75
                   },
                   {
-                    mobId: spriteKeys.shadowShaman,
+                    mobId: mobKeys.shadowShaman,
                     chance: 0.75
                   }
                 ]
@@ -2281,7 +2281,7 @@ export const items = {
                 location: CaveLocationCaves.SkullCavern,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.serpent,
+                    mobId: mobKeys.serpent,
                     chance: 0.99
                   }
                 ]
@@ -2301,7 +2301,7 @@ export const items = {
     isNeverSoldTravelCart: true,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Fishing',
@@ -2351,19 +2351,19 @@ export const items = {
     spriteId: spriteKeys.wildPlum,
     sourceDetails: [
       {
-        seasons: [Seasons.Fall],
-        sources: [
-          {
-            __typename: 'Foraging'
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Foraging',
             locations: [ForagingLocations.FruitBatFarmCave]
+          }
+        ]
+      },
+      {
+        seasons: [Seasons.Fall],
+        sources: [
+          {
+            __typename: 'Foraging'
           }
         ]
       }
@@ -2373,7 +2373,7 @@ export const items = {
     spriteId: spriteKeys.wine,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'ArtisanGoods',
@@ -2395,15 +2395,7 @@ export const items = {
     spriteId: spriteKeys.winterRoot,
     sourceDetails: [
       {
-        seasons: [Seasons.Winter],
-        sources: [
-          {
-            __typename: 'Foraging'
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Combat',
@@ -2412,12 +2404,20 @@ export const items = {
                 location: CaveLocationCaves.Mines,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.blueSlime,
+                    mobId: mobKeys.blueSlime,
                     chance: 0.08
                   }
                 ]
               }
             ]
+          }
+        ]
+      },
+      {
+        seasons: [Seasons.Winter],
+        sources: [
+          {
+            __typename: 'Foraging'
           }
         ]
       }
@@ -2427,7 +2427,7 @@ export const items = {
     spriteId: spriteKeys.wood,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Foraging'
@@ -2444,7 +2444,7 @@ export const items = {
     spriteId: spriteKeys.woodskip,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Fishing',
@@ -2458,7 +2458,7 @@ export const items = {
     spriteId: spriteKeys.wool,
     sourceDetails: [
       {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'AnimalProducts',
@@ -2481,15 +2481,7 @@ export const items = {
     spriteId: spriteKeys.yam,
     sourceDetails: [
       {
-        seasons: [Seasons.Fall],
-        sources: [
-          {
-            __typename: 'Farming'
-          }
-        ]
-      },
-      {
-        seasons: [Seasons.AllSeasons],
+        seasons: [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter],
         sources: [
           {
             __typename: 'Combat',
@@ -2498,12 +2490,20 @@ export const items = {
                 location: CaveLocationCaves.Mines,
                 mobFloor: [
                   {
-                    mobId: spriteKeys.duggy,
+                    mobId: mobKeys.duggy,
                     chance: 0.03
                   }
                 ]
               }
             ]
+          }
+        ]
+      },
+      {
+        seasons: [Seasons.Fall],
+        sources: [
+          {
+            __typename: 'Farming'
           }
         ]
       }

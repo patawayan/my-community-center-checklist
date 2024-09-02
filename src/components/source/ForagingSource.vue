@@ -5,8 +5,8 @@ export default {}
 <script setup lang="ts">
 import { SourceType, type Foraging } from '@/data/types'
 import SourceContainer from './SourceContainer.vue'
-import SourceTag from '../tags/SourceTag.vue'
-import PixelText from '../PixelText.vue'
+import SourceTag from '../common/tags/SourceTag.vue'
+import PixelText from '../common/PixelText.vue'
 
 defineProps({
   detail: {
@@ -18,11 +18,11 @@ defineProps({
 
 <template>
   <SourceContainer>
-    <div class="flex justify-between items-center gap-2 w-full">
+    <div class="flex items-center gap-2">
       <SourceTag :source="SourceType.Foraging" />
-      <PixelText v-if="detail.locations">{{ detail.locations.join(', ') }}</PixelText>
     </div>
-    <PixelText v-if="detail.info" class="max-w-52">{{ detail.info }}</PixelText>
+    <PixelText v-if="detail.locations">{{ detail.locations.join(', ') }}</PixelText>
+    <PixelText v-if="detail.info" class="max-w-40 text-center">{{ detail.info }}</PixelText>
   </SourceContainer>
 </template>
 

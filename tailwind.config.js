@@ -14,6 +14,7 @@ export default {
         },
         grey: {
           DEFAULT: '#949494',
+          10: '#E6E6E6',
           100: '#949494'
         },
         brown: {
@@ -36,6 +37,7 @@ export default {
         },
         blue: {
           DEFAULT: '#56B2FF',
+          50: '#B6D7FF',
           100: '#7DD0FF',
           200: '#83BCFF',
           300: '#56B2FF',
@@ -44,9 +46,11 @@ export default {
         },
         green: {
           DEFAULT: '#97E44B',
+          50: '#C5FFD2',
           100: '#97E44B',
           200: '#4CDE28',
           300: '#49D346',
+          400: '#0BC033',
           700: '#114908'
         },
         yellow: {
@@ -57,6 +61,7 @@ export default {
         },
         orange: {
           DEFAULT: '#FF9F26',
+          50: '#FFE4C7',
           100: '#FF9F26',
           200: '#EC7508',
           700: '#381B00'

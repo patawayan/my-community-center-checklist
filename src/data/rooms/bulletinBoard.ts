@@ -1,5 +1,5 @@
 import { items, type BundleItemBare } from '../items'
-import { RoomReward, type Bundle, type Room } from '../types'
+import { BulletinBoardBundles, RoomReward, RoomTypes, type Bundle, type Room } from '../types'
 
 const ChefsBundle: BundleItemBare[] = [
   {
@@ -87,35 +87,40 @@ const EnchantersBundle: BundleItemBare[] = [
 
 const BulletinBoardBundle: Bundle[] = [
   {
-    name: "Chef's Bundle",
+    name: BulletinBoardBundles.ChefsBundle,
+    required: 6,
     items: ChefsBundle.map((item, index) => ({
       id: `chefsBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Dye Bundle',
+    name: BulletinBoardBundles.DyeBundle,
+    required: 6,
     items: DyeBundle.map((item, index) => ({
       id: `dyeBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Field Research Bundle',
+    name: BulletinBoardBundles.FieldResearchBundle,
+    required: 4,
     items: FieldResearchBundle.map((item, index) => ({
       id: `fieldResearchBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Fodder Bundle',
+    name: BulletinBoardBundles.FodderBundle,
+    required: 3,
     items: FodderBundle.map((item, index) => ({
       id: `fodderBundle-${index}`,
       ...item
     }))
   },
   {
-    name: "Enchanter's Bundle",
+    name: BulletinBoardBundles.EnchantersBundle,
+    required: 4,
     items: EnchantersBundle.map((item, index) => ({
       id: `enchatnersBundle-${index}`,
       ...item
@@ -124,7 +129,7 @@ const BulletinBoardBundle: Bundle[] = [
 ]
 
 export const BulletinBoard: Room = {
-  name: 'Bulletin Board',
+  name: RoomTypes.BulletinBoard,
   bundles: BulletinBoardBundle,
   reward: RoomReward.Friendship
 }

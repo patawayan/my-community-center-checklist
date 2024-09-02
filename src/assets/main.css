@@ -33,6 +33,19 @@ body {
   font-family: 'stardew-valley', sans-serif;
 }
 
+div:focus,
+button:focus,
+input:focus {
+  outline: theme('colors.brown.700') solid 4px !important;
+}
+
+.pixel-message-border {
+  border: 3px solid theme('colors.brown.700');
+  box-shadow:
+    inset 0px 0px 0px 6px theme('colors.brown.300'),
+    inset 0px 0px 0px 12px theme('colors.brown.200');
+}
+
 .pixel-text-shadow {
   filter: drop-shadow(1px 1px 0px #00000040);
 }

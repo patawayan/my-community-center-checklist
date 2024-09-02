@@ -217,3 +217,13 @@ export const mobs: Partial<Record<SpriteKeyType, Mob>> = {
     ]
   }
 }
+
+export type MobKeyType = keyof typeof mobs
+
+export const mobKeys = Object.keys(mobs).reduce(
+  (acc, key) => ({
+    ...acc,
+    [key]: key
+  }),
+  {} as Record<MobKeyType, MobKeyType>
+)

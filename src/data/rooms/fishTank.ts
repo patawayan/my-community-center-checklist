@@ -1,5 +1,5 @@
 import { items, type BundleItemBare } from '../items'
-import { RoomReward, type Bundle, type Room } from '../types'
+import { FishTankBundles, RoomReward, RoomTypes, type Bundle, type Room } from '../types'
 
 const RiverFishBundle: BundleItemBare[] = [
   {
@@ -108,42 +108,48 @@ const SpecialtyFishBundle: BundleItemBare[] = [
 
 const FishTankBundle: Bundle[] = [
   {
-    name: 'River Fish Bundle',
+    name: FishTankBundles.RiverFishBundle,
+    required: 4,
     items: RiverFishBundle.map((item, index) => ({
       id: `riverFishBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Lake Fish Bundle',
+    name: FishTankBundles.LakeFishBundle,
+    required: 4,
     items: LakeFishBundle.map((item, index) => ({
       id: `lakeFishBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Ocean Fish Bundle',
+    name: FishTankBundles.OceanFishBundle,
+    required: 4,
     items: OceanFishBundle.map((item, index) => ({
       id: `oceanFishBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Night Fish Bundle',
+    name: FishTankBundles.NightFishBundle,
+    required: 3,
     items: NightFishBundle.map((item, index) => ({
       id: `nightFishBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Crab Pot Bundle',
+    name: FishTankBundles.CrabPotBundle,
+    required: 5,
     items: CrabPotBundle.map((item, index) => ({
       id: `crabPotBundle-${index}`,
       ...item
     }))
   },
   {
-    name: 'Specialty Fish Bundle',
+    name: FishTankBundles.SpecialtyFishBundle,
+    required: 4,
     items: SpecialtyFishBundle.map((item, index) => ({
       id: `specialtyFishBundle-${index}`,
       ...item
@@ -152,7 +158,7 @@ const FishTankBundle: Bundle[] = [
 ]
 
 export const FishTank: Room = {
-  name: 'Fish Tank',
+  name: RoomTypes.FishTank,
   bundles: FishTankBundle,
   reward: RoomReward.GlitteringBoulderRemoved
 }
