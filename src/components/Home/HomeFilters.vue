@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import InputCheckbox from '../common/input/InputCheckbox.vue'
 import InputDropdown from '../common/input/InputDropdown.vue'
 import { ForagingLocations, RoomBundleMap, RoomTypes, Seasons, SourceType } from '@/data/types'
