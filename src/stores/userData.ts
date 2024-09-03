@@ -227,7 +227,7 @@ export const useUserDataStore = defineStore('userData', () => {
     const newListId = window.crypto.randomUUID()
 
     checklistData.ownerId = userData.userId
-    checklistData.listName = `My List ${userData.listIds.length}`
+    checklistData.listName = `My List${userData.listIds.length > 0 ? ' ' + userData.listIds.length : ''}`
     checklistData.listId = newListId
     checklistData.checklistData = []
     checklistData.lastUpdated = new Date().toISOString()
