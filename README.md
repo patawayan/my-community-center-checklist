@@ -1,39 +1,31 @@
-# my-community-center-list
+# My Community Center List
 
-This template should help get you started developing with Vue 3 in Vite.
+There are a lot of existing community center lists out there, but I always had a few nitpicks with all of them
 
-## Recommended IDE Setup
+For my this project, my goal is to have the following features:
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- UI-wise have it have the same aesthetic as Stardew Valley (Done)
+- Automatically crosses off items you don't need to collect anymore (WIP)
+- Multiplayer Support (Multiple people can edit the same list at once) (WIP)
+- Easy to Read/Mobile friendly (To Do)
 
-## Type Support for `.vue` Imports in TS
+### Project Setup
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+#### Requirements
 
-## Customize configuration
+1. Node
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+#### Development
 
-## Project Setup
+1. `npm install`
+2. `npm run dev`
 
-```sh
-npm install
-```
+### Design
 
-### Compile and Hot-Reload for Development
+Link to Figma:
+https://www.figma.com/design/PCvS4z4U4KHHaRk0UDVsId/My-Community-Center-Check-List?node-id=252-2&t=04HHaiuSDucUHuW2-1
 
-```sh
-npm run dev
-```
+### Deployment
 
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+Live Web App:
+https://my-community-center-list.web.app/
