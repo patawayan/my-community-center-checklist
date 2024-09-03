@@ -28,7 +28,14 @@ defineProps({
 <template>
   <div class="relative pt-5">
     <div class="pt-9 pb-3 px-6 bg-brown-75 pixel-sunken-shadow gap-3 flex">
-      <div v-for="source in detail.sources" :key="source.__typename">
+      <div
+        v-for="source in detail.sources"
+        :key="source.__typename"
+        :class="[
+          detail.seasons.length === 3 ? 'min-w-36' : '',
+          detail.seasons.length === 2 ? 'min-w-24' : ''
+        ]"
+      >
         <AnimalProductsSource
           v-if="source.__typename === SourceType.AnimalProducts"
           :detail="source"
@@ -45,7 +52,7 @@ defineProps({
         <OtherSource v-if="source.__typename === SourceType.Other" :detail="source" />
       </div>
     </div>
-    <div class="flex gap-2 absolute top-0 left-0">
+    <div class="flex gap-2 absolute top-0 left-0 w-full justify-center">
       <SeasonTag v-if="detail?.seasons?.length === 4" :season="Seasons.AllSeasons" />
       <SeasonTag v-else v-for="season in detail.seasons" :season="season" :key="season" />
     </div>

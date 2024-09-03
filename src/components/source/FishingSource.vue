@@ -30,12 +30,12 @@ defineProps({
     <PixelText v-if="detail.locations" class="text-center">{{
       detail.locations.join(', ')
     }}</PixelText>
-    <div class="flex gap-2">
-      <PixelText v-if="detail.time" class="max-w-52 text-center"
+    <div class="flex gap-2 flex-wrap justify-center">
+      <PixelText v-if="detail.time" class="max-w-52 text-center text-nowrap"
         >{{ getTime(detail.time.starting) }}
         {{ detail.time.ending ? '- ' + getTime(detail.time.ending) : undefined }}</PixelText
       >
-      <PixelText v-if="detail.weather" class="max-w-52">{{ detail.weather }}</PixelText>
+      <PixelText v-if="detail.weather" class="text-center max-w-52">{{ detail.weather }}</PixelText>
     </div>
   </SourceContainer>
 </template>

@@ -21,7 +21,9 @@ defineProps({
     <div class="flex items-center gap-2">
       <SourceTag :source="SourceType.Foraging" />
     </div>
-    <PixelText v-if="detail.locations">{{ detail.locations.join(', ') }}</PixelText>
+    <PixelText v-if="detail.locations" class="text-center">{{
+      detail.locations.join(', ')
+    }}</PixelText>
     <PixelText v-if="detail.info" class="max-w-40 text-center">{{ detail.info }}</PixelText>
   </SourceContainer>
 </template>

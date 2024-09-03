@@ -66,6 +66,7 @@ watch(currentListId, (newVal) => {
           @subclick="
             (event) => {
               event.stopPropagation()
+              newListName = userData.checklistData.listName
               openNameEdit = true
             }
           "

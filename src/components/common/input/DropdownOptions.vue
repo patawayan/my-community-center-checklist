@@ -58,7 +58,9 @@ onUnmounted(() => {
 const dropdownOptions = ref<Element>()
 
 //@ts-ignore
-onClickOutside(dropdownOptions, () => (isOpen.value = false))
+onClickOutside(dropdownOptions, () => {
+  isOpen.value = false
+})
 </script>
 
 <template>

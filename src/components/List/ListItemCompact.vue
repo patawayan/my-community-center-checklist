@@ -27,10 +27,13 @@ import iridiumQuality from '@/assets/images/quality_iridium.png'
 import PixelText from '../common/PixelText.vue'
 import SourceDetails from '../common/tags/SourceDetails.vue'
 import { computed, ref, watch } from 'vue'
-import { Quality } from '@/data/types'
+import { Quality, SourceType } from '@/data/types'
 import { useUserDataStore } from '@/stores/userData'
 import { CheckListStatus } from '@/types'
 import StatusDropdown from '../common/input/StatusDropdown.vue'
+import SeasonTag from '../common/tags/SeasonTag.vue'
+import SourceTag from '../common/tags/SourceTag.vue'
+import ModalBody from '../common/ModalBody.vue'
 
 const props = defineProps({
   item: {
@@ -39,20 +42,46 @@ const props = defineProps({
   }
 })
 
+defineEmits(['item-click'])
+
 const itemSprite = computed(() => Sprites[props.item.item.spriteId])
 
 const userData = useUserDataStore()
 
 const itemStatus = ref(userData.statusItems?.[props.item.id]?.status ?? CheckListStatus.ToDo)
-watch(itemStatus, (value) => userData.setStatus(props.item.id, value))
+watch(itemStatus, (value) => {
+  userData.setStatus(props.item.id, value)
+})
+
+const itemSeasons = computed(() => {
+  return [...new Set(props.item.item.sourceDetails.flatMap((source) => source.seasons))]
+})
+
+const itemSources = computed(() => {
+  return [
+    ...new Set(
+      props.item.item.sourceDetails.flatMap((source) =>
+        source.sources.flatMap((source) => source.__typename as SourceType)
+      )
+    )
+  ]
+})
 </script>
 
 <template>
-  <div class="w-full pt-2 relative">
+  <div class="w-full relative">
     <div
-      :class="['w-full py-3 px-10 pixel-shadow flex items-center gap-5', statusBgColor[itemStatus]]"
+      :class="['w-full py-2 px-5 pixel-shadow flex items-center gap-5', statusBgColor[itemStatus]]"
     >
-      <div class="basis-1/5 flex gap-3 items-center">
+      <div class="flex basis-[23%] items-center gap-2">
+        <RoomTag :room="item.room" />
+        <img :src="dropdownArrow" alt="dropdown arrow" class="-rotate-90 w-4 h-2" />
+        <BundleTag :bundle="item.bundle" />
+      </div>
+      <div
+        class="basis-1/5 flex gap-3 items-center hover:cursor-pointer hover:opacity-70"
+        @click="$emit('item-click')"
+      >
         <div class="w-10 relative">
           <img
             v-if="item.quality"
@@ -66,23 +95,20 @@ watch(itemStatus, (value) => userData.setStatus(props.item.id, value))
         <PixelText size="2xl" class="flex-grow">{{ itemSprite.name }}</PixelText>
         <PixelText v-if="item.quantity">x {{ item?.quantity }}</PixelText>
       </div>
-      <div class="flex gap-3 flex-grow w-0 justify-center">
-        <SourceDetails
-          v-for="(source, index) in item.item.sourceDetails"
-          :detail="source"
-          :key="index"
-        />
+      <div class="flex gap-3 flex-col flex-grow w-0 items-center justify-center">
+        <div class="flex gap-3">
+          <SeasonTag v-for="season in itemSeasons" :key="season" :season="season" />
+        </div>
+        <div class="flex gap-3">
+          <SourceTag v-for="src in itemSources" :key="src" :source="src" />
+        </div>
       </div>
       <div class="basis-1/6 flex justify-end">
         <StatusDropdown v-model="itemStatus" />
       </div>
       <!-- <div class="absolute top-0 bottom-0 left-0 right-0 bg-grey-10 z-50 opacity-90"></div> -->
     </div>
-    <div class="absolute top-0 -left-1 flex items-center gap-2">
-      <RoomTag :room="item.room" />
-      <img :src="dropdownArrow" alt="dropdown arrow" class="-rotate-90 w-4 h-2" />
-      <BundleTag :bundle="item.bundle" />
-    </div>
+    <div class="absolute top-0 -left-1 flex items-center gap-2"></div>
     <!-- <div class="absolute top-0 bottom-0 left-0 right-0 min-w-full min-h-full flex">
       <PixelTitle size="xl" class="flex-grow flex items-center justify-center">
         Bundle Completed. No longer needed.

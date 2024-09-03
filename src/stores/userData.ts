@@ -250,11 +250,8 @@ export const useUserDataStore = defineStore('userData', () => {
   const loadData = (listId?: string) => {
     const localUserDataStr = localStorage.getItem(STARDEW_COMMUNITY_LIST_USER_STORAGE_KEY)
 
-    console.log('localUserDataStr', localUserDataStr)
-
     if (localUserDataStr) {
       const localUserData = JSON.parse(localUserDataStr) as UserData
-      console.log('localUserDatalocalUserData', localUserData)
 
       userData.currentListId = localUserData.currentListId
       userData.userId = localUserData.userId
@@ -313,9 +310,14 @@ export const useUserDataStore = defineStore('userData', () => {
     )
   )
 
+  // const completedBundles = computed(() =>
+  //   checklistData.checklistData.filter((item) => item.status === CheckListStatus.Completed).length
+
+  // )
+
   const setStatus = (bundleItem: string, status: CheckListStatus) => {
     const localStatusItems: ChecklistItem[] = [
-      ...Object.values(statusItems),
+      ...Object.values(statusItems.value),
       { bundleItem, status, lastUpdated: new Date().toISOString() }
     ]
     checklistData.checklistData = localStatusItems
@@ -471,7 +473,6 @@ export const useUserDataStore = defineStore('userData', () => {
 
   watch(checklistData, () => {
     storeChecklistData()
-    console.log('betterrrlife')
     reloadListNames()
   })
 
