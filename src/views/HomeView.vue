@@ -4,7 +4,6 @@ import HomeHeader from '../components/Home/HomeHeader.vue'
 import { eventBus } from '@/utils/eventBus'
 import { useUserDataStore } from '@/stores/userData'
 import { useRoute } from 'vue-router'
-import PixelButton from '@/components/common/PixelButton.vue'
 import DevInfoModal from '@/components/modal/DevInfoModal.vue'
 
 const userData = useUserDataStore()

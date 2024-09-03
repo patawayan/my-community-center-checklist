@@ -20,7 +20,7 @@ export type Checklist = {
   ownerId: string
   checklistData: ChecklistItem[]
   lastUpdated: string
-  isMainList?: boolean
+  isMultiplayer?: boolean
 }
 
 export type UserData = {

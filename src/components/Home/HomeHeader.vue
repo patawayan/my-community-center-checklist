@@ -3,7 +3,7 @@ import PixelTitle from '@/components/common/PixelTitle.vue'
 import PixelButton from '@/components/common/PixelButton.vue'
 import funnelIcon from '@/assets/images/funnel_icon.png'
 import funnelIconX from '@/assets/images/funnel_icon_x.png'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import HomeFilters from './HomeFilters.vue'
 import { useUserDataStore } from '@/stores/userData'
 import ModalBody from '../common/ModalBody.vue'
@@ -29,9 +29,19 @@ const openNewListModal = ref(false)
 const openNameEdit = ref(false)
 const newListName = ref<string>('')
 
+watch(newListName, (newVal) => {
+  userData.checklistData.listName = newVal
+})
+
 const listNameInput = ref(null)
 onClickOutside(listNameInput, () => {
   openNameEdit.value = false
+})
+
+const currentListId = ref<string[]>([userData.checklistData.listId ?? ''])
+watch(currentListId, (newVal) => {
+  userData.userData.currentListId = newVal[0]
+  userData.reloadData()
 })
 </script>
 
@@ -40,21 +50,24 @@ onClickOutside(listNameInput, () => {
     <div class="flex justify-between w-full">
       <PixelTitle size="2xl">My Community Center Checklist</PixelTitle>
 
-      <div class="flex gap-3 items-center">
-        <InputText
-          ref="listNameInput"
-          v-if="openNameEdit"
-          v-model="newListName"
-          placeholder="New List Name"
-          @keydown.enter="
-            () => {
-              userData.checklistData.listName = newListName
-              openNameEdit = false
-            }
+      <div class="flex gap-3 w-max items-center">
+        <InputDropdown
+          v-if="userData.listNames.length > 1 && !openNameEdit"
+          :options="
+            userData.listNames.map((name) => {
+              if (name.value === userData.userData.currentListId) {
+                return { label: userData.checklistData.listName, value: name.value }
+              }
+              return name
+            })
           "
+          textOnHover
+          v-model="currentListId"
+          @subclick="openNameEdit = true"
+          disable-unselect
         />
         <PixelTitle
-          v-else
+          v-else-if="!openNameEdit"
           class="hover:cursor-pointer"
           @click="
             () => {
@@ -64,8 +77,22 @@ onClickOutside(listNameInput, () => {
           "
           >{{ userData.checklistData.listName }}</PixelTitle
         >
-        <PixelButton> Play with Friends! </PixelButton>
+        <InputText
+          ref="listNameInput"
+          v-else
+          v-model="newListName"
+          placeholder="New List Name"
+          @keydown.enter="
+            () => {
+              userData.checklistData.listName = newListName
+              openNameEdit = false
+            }
+          "
+        />
+
+        <PixelButton v-if="false"> Play with Friends! </PixelButton>
         <PixelButton @click="openNewListModal = true"> New List! </PixelButton>
+
         <PixelButton class="w-10" @click="isFilterOpen = !isFilterOpen">
           <img v-if="!isFilterOpen" :src="funnelIcon" alt="filter icon" class="w-full" />
           <img v-else :src="funnelIconX" alt="filter icon" class="w-full" />

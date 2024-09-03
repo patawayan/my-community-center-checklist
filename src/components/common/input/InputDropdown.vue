@@ -6,11 +6,11 @@ import PixelButton from '../PixelButton.vue'
 import type { DropdownOption } from './types'
 import { computed, type PropType } from 'vue'
 
-const emit = defineEmits(['update:modelValue', 'afterChange'])
+const emit = defineEmits(['update:modelValue', 'afterChange', 'subclick'])
 
 const props = defineProps({
   modelValue: {
-    type: Array as () => String[]
+    type: Array as () => string[]
   },
   options: {
     type: Array as PropType<DropdownOption[]>,
@@ -26,6 +26,14 @@ const props = defineProps({
   multiple: {
     type: Boolean,
     default: false
+  },
+  disableUnselect: {
+    type: Boolean,
+    default: false
+  },
+  textOnHover: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -35,7 +43,7 @@ const isAllSelected = computed(() => {
   return props.selectAll && props.modelValue && props.modelValue.length === props.options.length - 1
 })
 
-const setSelectedOption = (value: String) => {
+const setSelectedOption = (value: string) => {
   if (isMultiple.value) {
     let newModelValue = props.modelValue ? [...props.modelValue] : []
     if (props.selectAll && value === props.selectAll) {
@@ -43,19 +51,32 @@ const setSelectedOption = (value: String) => {
         ? []
         : props.options.filter((opt) => opt.value !== props.selectAll).map((option) => option.value)
     } else if (newModelValue.includes(value)) {
-      newModelValue = newModelValue.filter((modVal) => modVal !== value)
+      if (!props.disableUnselect) {
+        newModelValue = newModelValue.filter((modVal) => modVal !== value)
+      }
     } else {
       newModelValue.push(value)
     }
 
     emit('update:modelValue', newModelValue)
-  } else if (props.modelValue && value === props.modelValue[0]) {
+  } else if (props.modelValue && value === props.modelValue[0] && !props.disableUnselect) {
     emit('update:modelValue', [])
   } else {
     emit('update:modelValue', [value])
   }
   emit('afterChange')
 }
+
+const optionLabels = computed(() => {
+  return props.options.reduce(
+    (acc, option) => ({ ...acc, [option.value]: option.label }),
+    {} as Record<string, string>
+  )
+})
+
+const valueLabels = computed(
+  () => props.modelValue?.map((val) => optionLabels.value[val] ?? val) ?? []
+)
 </script>
 
 <template>
@@ -67,10 +88,14 @@ const setSelectedOption = (value: String) => {
   >
     <div class="flex hover:cursor-pointer w-full">
       <div
-        class="flex gap-2 pixel-sunken-shadow bg-brown-400 p-1 px-2 flex-grow justify-center text-center"
+        :class="[
+          'flex gap-2 pixel-sunken-shadow bg-brown-400 p-1 px-2 flex-grow justify-center text-center',
+          textOnHover ? 'hover:cursor-text' : ''
+        ]"
+        @click.stop="$emit('subclick')"
       >
         <PixelText v-if="modelValue && modelValue.length" class="text-ellipsis">
-          {{ isAllSelected ? selectAll : modelValue.join(', ') }}
+          {{ isAllSelected ? selectAll : valueLabels.join(', ') }}
         </PixelText>
         <PixelText v-else class="opacity-40 w-max">{{ placeholder }}</PixelText>
       </div>

@@ -62,7 +62,7 @@ onClickOutside(dropdownOptions, () => (isOpen.value = false))
 </script>
 
 <template>
-  <div class="flex gap-2 items-center w-full" @click="isOpen = true" ref="dropdown">
+  <div class="flex gap-2 items-center w-auto justify-end" @click="isOpen = true" ref="dropdown">
     <slot></slot>
   </div>
   <Teleport to="#dropdown">

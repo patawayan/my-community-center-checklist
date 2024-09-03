@@ -11,6 +11,7 @@ import {
 } from '@/types'
 import { RoomBundleItems, Sprites, type RoomBundleItem } from '@/data'
 import { ForagingLocations, SourceType } from '@/data/types'
+import { useDebounceFn } from '@vueuse/core'
 
 const STARDEW_COMMUNITY_LIST_USER_STORAGE_KEY = '@stardew-my-community-list-user'
 const STARDEW_COMMUNITY_LIST_LIST_STORAGE_KEY = '@stardew-my-community-list-list'
@@ -80,7 +81,7 @@ export const useUserDataStore = defineStore('userData', () => {
     searchValue: ''
   })
 
-  const checklistData = ref<Checklist>({
+  const checklistData = reactive<Checklist>({
     listName: '',
     ownerId: '',
     listId: '',
@@ -88,34 +89,57 @@ export const useUserDataStore = defineStore('userData', () => {
     lastUpdated: ''
   })
 
-  const userData = ref<UserData>({
+  const userData = reactive<UserData>({
     userId: '',
     currentListId: '',
     listIds: []
   })
 
   const checklistStorageKey = computed(
-    () => `${STARDEW_COMMUNITY_LIST_LIST_STORAGE_KEY}-${userData.value.currentListId}`
+    () => `${STARDEW_COMMUNITY_LIST_LIST_STORAGE_KEY}-${userData.currentListId}`
   )
 
   const checklistDataFilterKey = computed(
-    () => `${STARDEW_COMMUNITY_LIST_DATA_FILTERS_STORAGE_KEY}-${userData.value.currentListId}`
+    () => `${STARDEW_COMMUNITY_LIST_DATA_FILTERS_STORAGE_KEY}-${userData.currentListId}`
   )
 
   const checklistViewFilterKey = computed(
-    () => `${STARDEW_COMMUNITY_LIST_VIEW_FILTERS_STORAGE_KEY}-${userData.value.currentListId}`
+    () => `${STARDEW_COMMUNITY_LIST_VIEW_FILTERS_STORAGE_KEY}-${userData.currentListId}`
   )
   const checklistGlobalFilterKey = computed(
-    () => `${STARDEW_COMMUNITY_LIST_GLOBAL_FILTERS_STORAGE_KEY}-${userData.value.currentListId}`
+    () => `${STARDEW_COMMUNITY_LIST_GLOBAL_FILTERS_STORAGE_KEY}-${userData.currentListId}`
   )
 
+  const listNames = ref<{ value: string; label: string }[]>([])
+
+  const reloadListNames = () => {
+    listNames.value = userData.listIds.map((listId) => {
+      const listData = localStorage.getItem(`${STARDEW_COMMUNITY_LIST_LIST_STORAGE_KEY}-${listId}`)
+      if (listData) {
+        const parsedListData = JSON.parse(listData) as Checklist
+        return {
+          value: listId,
+          label: parsedListData.listName
+        }
+      }
+      return {
+        value: listId,
+        label: ''
+      }
+    })
+  }
+
+  const debouncedChecklistData = useDebounceFn(() => {
+    localStorage.setItem(checklistStorageKey.value, JSON.stringify(checklistData))
+  }, 1000)
+
   const storeChecklistData = () => {
-    checklistData.value.lastUpdated = new Date().toISOString()
-    localStorage.setItem(checklistStorageKey.value, JSON.stringify(checklistData.value))
+    checklistData.lastUpdated = new Date().toISOString()
+    debouncedChecklistData()
   }
 
   const storeUserData = () => {
-    localStorage.setItem(STARDEW_COMMUNITY_LIST_USER_STORAGE_KEY, JSON.stringify(userData.value))
+    localStorage.setItem(STARDEW_COMMUNITY_LIST_USER_STORAGE_KEY, JSON.stringify(userData))
   }
 
   const storeFilters = () => {
@@ -189,26 +213,32 @@ export const useUserDataStore = defineStore('userData', () => {
 
   const setChecklistData = () => {
     const checklistdata = localStorage.getItem(checklistStorageKey.value)
-
     if (checklistdata) {
-      checklistData.value = JSON.parse(checklistdata) as Checklist
+      const localChecklistData = JSON.parse(checklistdata) as Checklist
+      checklistData.ownerId = localChecklistData.ownerId
+      checklistData.listName = localChecklistData.listName
+      checklistData.listId = localChecklistData.listId
+      checklistData.checklistData = localChecklistData.checklistData
+      checklistData.lastUpdated = localChecklistData.lastUpdated
     }
   }
 
   const createNewCheckList = () => {
-    userData.value.currentListId = window.crypto.randomUUID()
-    userData.value.listIds.push(userData.value.currentListId)
+    const newListId = window.crypto.randomUUID()
 
-    checklistData.value = {
-      ownerId: userData.value.userId,
-      listName: `My List ${new Date().toISOString()}`,
-      listId: userData.value.currentListId,
-      checklistData: [],
-      lastUpdated: new Date().toISOString()
-    }
-    storeUserData()
+    checklistData.ownerId = userData.userId
+    checklistData.listName = `My List ${userData.listIds.length}`
+    checklistData.listId = newListId
+    checklistData.checklistData = []
+    checklistData.lastUpdated = new Date().toISOString()
+
     storeChecklistData()
     setNewGlobalFilters()
+
+    userData.currentListId = newListId
+    userData.listIds.push(newListId)
+
+    storeUserData()
   }
 
   const createNewCheckListData = () => {
@@ -218,15 +248,22 @@ export const useUserDataStore = defineStore('userData', () => {
   }
 
   const loadData = (listId?: string) => {
-    const localUserData = localStorage.getItem(STARDEW_COMMUNITY_LIST_USER_STORAGE_KEY)
+    const localUserDataStr = localStorage.getItem(STARDEW_COMMUNITY_LIST_USER_STORAGE_KEY)
 
-    if (localUserData) {
-      userData.value = JSON.parse(localUserData) as UserData
+    console.log('localUserDataStr', localUserDataStr)
+
+    if (localUserDataStr) {
+      const localUserData = JSON.parse(localUserDataStr) as UserData
+      console.log('localUserDatalocalUserData', localUserData)
+
+      userData.currentListId = localUserData.currentListId
+      userData.userId = localUserData.userId
+      userData.listIds = localUserData.listIds
+
       if (listId) {
-        if (userData.value.listIds.includes(listId)) {
-          userData.value.currentListId = listId
+        if (userData.listIds.includes(listId)) {
+          userData.currentListId = listId
           setChecklistData()
-
           setGlobalFilters()
         }
 
@@ -235,29 +272,28 @@ export const useUserDataStore = defineStore('userData', () => {
 
         // If no data to pull then get from listIds
         // if listIds is empty then create a new list
-        if (!userData.value.currentListId) {
-          if (userData.value.listIds.length > 0) {
-            userData.value.currentListId = userData.value.listIds[0]
-            setChecklistData()
-          } else {
-            createNewCheckList()
-          }
+      }
+
+      if (!userData.currentListId) {
+        if (userData.listIds.length == 0) {
+          createNewCheckList()
+        } else {
+          userData.currentListId = userData.listIds[0]
+          setChecklistData()
         }
+      } else {
+        setChecklistData()
       }
     } else {
-      const localUserData: UserData = {
-        userId: window.crypto.randomUUID(),
-        currentListId: '',
-        listIds: []
-      }
-      userData.value = { ...localUserData }
+      userData.currentListId = ''
+      userData.userId = window.crypto.randomUUID()
+      userData.listIds = []
 
       if (listId) {
         // Pull Online
 
         // if no list pulled online then create new list
-        if (!userData.value.currentListId) {
-          console.log('drinnkk', userData.value.currentListId)
+        if (!userData.currentListId) {
           createNewCheckList()
         }
       } else {
@@ -271,7 +307,7 @@ export const useUserDataStore = defineStore('userData', () => {
   }
 
   const statusItems = computed(() =>
-    checklistData.value.checklistData.reduce(
+    checklistData.checklistData.reduce(
       (acc, item) => ({ ...acc, [item.bundleItem]: item }),
       {} as Record<string, ChecklistItem>
     )
@@ -282,7 +318,7 @@ export const useUserDataStore = defineStore('userData', () => {
       ...Object.values(statusItems),
       { bundleItem, status, lastUpdated: new Date().toISOString() }
     ]
-    checklistData.value.checklistData = localStatusItems
+    checklistData.checklistData = localStatusItems
     storeChecklistData()
   }
 
@@ -433,11 +469,30 @@ export const useUserDataStore = defineStore('userData', () => {
     storeFilters()
   })
 
+  watch(checklistData, () => {
+    storeChecklistData()
+    console.log('betterrrlife')
+    reloadListNames()
+  })
+
+  watch(userData, () => {
+    storeUserData()
+  })
+
+  const reloadData = () => {
+    setChecklistData()
+    setFilters()
+    setGlobalFilters()
+  }
+
   return {
     statusItems,
     checklist,
     checklistData,
     userData,
+    reloadListNames,
+    listNames,
+    reloadData,
     loadData,
     setStatus,
     createNewCheckListData,
