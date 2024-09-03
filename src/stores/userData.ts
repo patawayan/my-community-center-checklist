@@ -1,17 +1,21 @@
 import { ref, computed, watch, reactive } from 'vue'
 import { defineStore } from 'pinia'
-import { CheckListStatus, type ChecklistItem, type UserData } from '@/types'
-import { RoomBundleItems, Sprites, type RoomBundleItem } from '@/data'
 import {
-  ForagingLocations,
-  SourceType,
-  type BundleTypes,
-  type RoomTypes,
-  type Seasons
-} from '@/data/types'
+  CheckListStatus,
+  type Checklist,
+  type ChecklistItem,
+  type DataFilters,
+  type GlobalFilters,
+  type UserData,
+  type ViewFilters
+} from '@/types'
+import { RoomBundleItems, Sprites, type RoomBundleItem } from '@/data'
+import { ForagingLocations, SourceType } from '@/data/types'
 
-const STARDEW_COMMUNITY_LIST_STORAGE_KEY = '@stardew-my-community-list'
+const STARDEW_COMMUNITY_LIST_USER_STORAGE_KEY = '@stardew-my-community-list-user'
+const STARDEW_COMMUNITY_LIST_LIST_STORAGE_KEY = '@stardew-my-community-list-list'
 const STARDEW_COMMUNITY_LIST_DATA_FILTERS_STORAGE_KEY = '@stardew-my-community-list-data-filters'
+const STARDEW_COMMUNITY_LIST_VIEW_FILTERS_STORAGE_KEY = '@stardew-my-community-list-view-filters'
 const STARDEW_COMMUNITY_LIST_GLOBAL_FILTERS_STORAGE_KEY =
   '@stardew-my-community-list-global-filters'
 
@@ -38,17 +42,6 @@ const sourceSort = (a: RoomBundleItem, b: RoomBundleItem) => {
   return 0
 }
 
-interface DataFilters {
-  onlyShowSelectedDetails: boolean
-  sortBy: SortTypes[]
-  season: Seasons[]
-  source: SourceType[]
-  room: RoomTypes[]
-  bundle: BundleTypes[]
-  status: CheckListStatus[]
-  searchValue: string
-}
-
 const nameSort = (a: RoomBundleItem, b: RoomBundleItem) =>
   Sprites[a.item.spriteId].name.localeCompare(Sprites[b.item.spriteId].name)
 
@@ -56,22 +49,19 @@ const nameSort = (a: RoomBundleItem, b: RoomBundleItem) =>
  * Store for user data
  */
 export const useUserDataStore = defineStore('userData', () => {
-  const isMultiplayer = ref(false)
-
   /**
    * Filters applied to all users (multiplayer)
    * Can only be edited by list owner
    */
-  const globalFilters = reactive<{
-    farmCaveType: ForagingLocations[]
-  }>({
-    farmCaveType: []
+  const globalFilters = reactive<GlobalFilters>({
+    farmCaveType: [],
+    lastUpdated: ''
   })
 
   /**
    * Filters for the list viewing experience
    */
-  const viewFilters = reactive({
+  const viewFilters = reactive<ViewFilters>({
     // Whether the list is in a compact style or not
     isVerboseList: true
   })
@@ -90,79 +80,210 @@ export const useUserDataStore = defineStore('userData', () => {
     searchValue: ''
   })
 
-  const userData = ref<UserData>({
+  const checklistData = ref<Checklist>({
+    listName: '',
     ownerId: '',
-    checklistData: []
+    listId: '',
+    checklistData: [],
+    lastUpdated: ''
   })
 
+  const userData = ref<UserData>({
+    userId: '',
+    currentListId: '',
+    listIds: []
+  })
+
+  const checklistStorageKey = computed(
+    () => `${STARDEW_COMMUNITY_LIST_LIST_STORAGE_KEY}-${userData.value.currentListId}`
+  )
+
+  const checklistDataFilterKey = computed(
+    () => `${STARDEW_COMMUNITY_LIST_DATA_FILTERS_STORAGE_KEY}-${userData.value.currentListId}`
+  )
+
+  const checklistViewFilterKey = computed(
+    () => `${STARDEW_COMMUNITY_LIST_VIEW_FILTERS_STORAGE_KEY}-${userData.value.currentListId}`
+  )
+  const checklistGlobalFilterKey = computed(
+    () => `${STARDEW_COMMUNITY_LIST_GLOBAL_FILTERS_STORAGE_KEY}-${userData.value.currentListId}`
+  )
+
+  const storeChecklistData = () => {
+    checklistData.value.lastUpdated = new Date().toISOString()
+    localStorage.setItem(checklistStorageKey.value, JSON.stringify(checklistData.value))
+  }
+
   const storeUserData = () => {
-    localStorage.setItem(STARDEW_COMMUNITY_LIST_STORAGE_KEY, JSON.stringify(userData.value))
+    localStorage.setItem(STARDEW_COMMUNITY_LIST_USER_STORAGE_KEY, JSON.stringify(userData.value))
   }
 
   const storeFilters = () => {
-    localStorage.setItem(
-      STARDEW_COMMUNITY_LIST_DATA_FILTERS_STORAGE_KEY,
-      JSON.stringify(dataFilters)
-    )
-    localStorage.setItem(
-      STARDEW_COMMUNITY_LIST_GLOBAL_FILTERS_STORAGE_KEY,
-      JSON.stringify(globalFilters)
-    )
+    localStorage.setItem(checklistDataFilterKey.value, JSON.stringify(dataFilters))
+    localStorage.setItem(checklistViewFilterKey.value, JSON.stringify(viewFilters))
   }
 
-  const loadData = () => {
-    const localUserData = localStorage.getItem(STARDEW_COMMUNITY_LIST_STORAGE_KEY)
-
-    if (localUserData) {
-      userData.value = JSON.parse(localUserData)
-      if (userData.value?.listId) {
-        isMultiplayer.value = true
-      }
-    } else {
-      const localUserData = {
-        ownerId: window.crypto.randomUUID(),
-        checklistData: []
-      }
-      userData.value = { ...localUserData }
-      isMultiplayer.value = false
-      storeUserData()
-    }
-    const localDataFilters = localStorage.getItem(STARDEW_COMMUNITY_LIST_DATA_FILTERS_STORAGE_KEY)
-    if (localDataFilters) {
-      const parsedDataFilters = JSON.parse(localDataFilters)
-
-      Object.keys(parsedDataFilters).forEach((key) => {
-        // @ts-ignore
-        dataFilters[key] = parsedDataFilters[key]
-      })
-    }
-
-    const localGlobalFilters = localStorage.getItem(
-      STARDEW_COMMUNITY_LIST_GLOBAL_FILTERS_STORAGE_KEY
-    )
-    if (localGlobalFilters) {
-      const parsedGlobalFilters = JSON.parse(localGlobalFilters)
-
-      Object.keys(parsedGlobalFilters).forEach((key) => {
-        // @ts-ignore
-        globalFilters[key] = parsedGlobalFilters[key]
-      })
-    }
-
+  const setNewDataFilter = () => {
+    dataFilters.onlyShowSelectedDetails = false
+    dataFilters.sortBy = []
+    dataFilters.season = []
+    dataFilters.source = []
+    dataFilters.room = []
+    dataFilters.bundle = []
+    dataFilters.status = []
+    dataFilters.searchValue = ''
     storeFilters()
   }
 
+  const setNewViewFilter = () => {
+    viewFilters.isVerboseList = true
+    storeFilters()
+  }
+
+  const setFilters = () => {
+    const dataFiltersData = localStorage.getItem(checklistDataFilterKey.value)
+    if (dataFiltersData) {
+      const localDataFilters = JSON.parse(dataFiltersData) as DataFilters
+      dataFilters.onlyShowSelectedDetails = localDataFilters.onlyShowSelectedDetails
+      dataFilters.sortBy = localDataFilters.sortBy
+      dataFilters.season = localDataFilters.season
+      dataFilters.source = localDataFilters.source
+      dataFilters.room = localDataFilters.room
+      dataFilters.bundle = localDataFilters.bundle
+      dataFilters.status = localDataFilters.status
+      dataFilters.searchValue = localDataFilters.searchValue
+    } else {
+      setNewDataFilter()
+    }
+
+    const viewFiltersData = localStorage.getItem(checklistViewFilterKey.value)
+    if (viewFiltersData) {
+      const localViewFilters = JSON.parse(viewFiltersData) as ViewFilters
+      viewFilters.isVerboseList = localViewFilters.isVerboseList
+    } else {
+      setNewViewFilter()
+    }
+  }
+
+  const storeGlobalFilters = () => {
+    localStorage.setItem(checklistGlobalFilterKey.value, JSON.stringify(globalFilters))
+  }
+
+  const setNewGlobalFilters = () => {
+    globalFilters.farmCaveType = []
+    globalFilters.lastUpdated = new Date().toISOString()
+    storeGlobalFilters()
+  }
+
+  const setGlobalFilters = () => {
+    const globalFiltersData = localStorage.getItem(checklistGlobalFilterKey.value)
+
+    if (globalFiltersData) {
+      const localGlobalFilters = JSON.parse(globalFiltersData) as GlobalFilters
+      globalFilters.farmCaveType = localGlobalFilters.farmCaveType
+      globalFilters.lastUpdated = localGlobalFilters.lastUpdated
+    } else {
+      setNewGlobalFilters()
+    }
+  }
+
+  const setChecklistData = () => {
+    const checklistdata = localStorage.getItem(checklistStorageKey.value)
+
+    if (checklistdata) {
+      checklistData.value = JSON.parse(checklistdata) as Checklist
+    }
+  }
+
+  const createNewCheckList = () => {
+    userData.value.currentListId = window.crypto.randomUUID()
+    userData.value.listIds.push(userData.value.currentListId)
+
+    checklistData.value = {
+      ownerId: userData.value.userId,
+      listName: `My List ${new Date().toISOString()}`,
+      listId: userData.value.currentListId,
+      checklistData: [],
+      lastUpdated: new Date().toISOString()
+    }
+    storeUserData()
+    storeChecklistData()
+    setNewGlobalFilters()
+  }
+
+  const createNewCheckListData = () => {
+    createNewCheckList()
+    setNewViewFilter()
+    setNewDataFilter()
+  }
+
+  const loadData = (listId?: string) => {
+    const localUserData = localStorage.getItem(STARDEW_COMMUNITY_LIST_USER_STORAGE_KEY)
+
+    if (localUserData) {
+      userData.value = JSON.parse(localUserData) as UserData
+      if (listId) {
+        if (userData.value.listIds.includes(listId)) {
+          userData.value.currentListId = listId
+          setChecklistData()
+
+          setGlobalFilters()
+        }
+
+        //TODO: Pull Data Online
+        // If current list id is set then check whether local data is latest or online data, then update based on that
+
+        // If no data to pull then get from listIds
+        // if listIds is empty then create a new list
+        if (!userData.value.currentListId) {
+          if (userData.value.listIds.length > 0) {
+            userData.value.currentListId = userData.value.listIds[0]
+            setChecklistData()
+          } else {
+            createNewCheckList()
+          }
+        }
+      }
+    } else {
+      const localUserData: UserData = {
+        userId: window.crypto.randomUUID(),
+        currentListId: '',
+        listIds: []
+      }
+      userData.value = { ...localUserData }
+
+      if (listId) {
+        // Pull Online
+
+        // if no list pulled online then create new list
+        if (!userData.value.currentListId) {
+          console.log('drinnkk', userData.value.currentListId)
+          createNewCheckList()
+        }
+      } else {
+        createNewCheckList()
+      }
+
+      storeUserData()
+    }
+
+    setFilters()
+  }
+
   const statusItems = computed(() =>
-    userData.value?.checklistData.reduce(
+    checklistData.value.checklistData.reduce(
       (acc, item) => ({ ...acc, [item.bundleItem]: item }),
       {} as Record<string, ChecklistItem>
     )
   )
 
   const setStatus = (bundleItem: string, status: CheckListStatus) => {
-    const localStatusItems = { ...statusItems.value, [bundleItem]: { bundleItem, status } }
-    userData.value.checklistData = Object.values(localStatusItems)
-    storeUserData()
+    const localStatusItems: ChecklistItem[] = [
+      ...Object.values(statusItems),
+      { bundleItem, status, lastUpdated: new Date().toISOString() }
+    ]
+    checklistData.value.checklistData = localStatusItems
+    storeChecklistData()
   }
 
   const statusSort = (a: RoomBundleItem, b: RoomBundleItem) =>
@@ -194,7 +315,6 @@ export const useUserDataStore = defineStore('userData', () => {
     } = dataFilters
 
     const { farmCaveType: localFarmCaveType } = globalFilters
-    console.log('asasasas', searchValue)
     // If no filters are applied, return the full list
     if (
       localSeasons.length === 0 &&
@@ -304,6 +424,10 @@ export const useUserDataStore = defineStore('userData', () => {
     storeFilters()
   })
 
+  watch(viewFilters, () => {
+    storeFilters()
+  })
+
   // Save the data filters to local storage
   watch(globalFilters, () => {
     storeFilters()
@@ -312,8 +436,11 @@ export const useUserDataStore = defineStore('userData', () => {
   return {
     statusItems,
     checklist,
+    checklistData,
+    userData,
     loadData,
     setStatus,
+    createNewCheckListData,
     dataFilters,
     globalFilters,
     viewFilters

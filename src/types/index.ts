@@ -1,3 +1,6 @@
+import type { BundleTypes, ForagingLocations, RoomTypes, Seasons, SourceType } from '@/data/types'
+import type { SortTypes } from '@/stores/userData'
+
 export enum CheckListStatus {
   ToDo = 'To Do',
   InProgress = 'In Progress',
@@ -8,10 +11,40 @@ export enum CheckListStatus {
 export type ChecklistItem = {
   bundleItem: string
   status: CheckListStatus
+  lastUpdated: string
+}
+
+export type Checklist = {
+  listId?: string
+  listName: string
+  ownerId: string
+  checklistData: ChecklistItem[]
+  lastUpdated: string
+  isMainList?: boolean
 }
 
 export type UserData = {
-  listId?: string
-  ownerId: string
-  checklistData: ChecklistItem[]
+  userId: string
+  currentListId: string
+  listIds: string[]
+}
+
+export type GlobalFilters = {
+  farmCaveType: ForagingLocations[]
+  lastUpdated: string
+}
+
+export type ViewFilters = {
+  isVerboseList: boolean
+}
+
+export type DataFilters = {
+  onlyShowSelectedDetails: boolean
+  sortBy: SortTypes[]
+  season: Seasons[]
+  source: SourceType[]
+  room: RoomTypes[]
+  bundle: BundleTypes[]
+  status: CheckListStatus[]
+  searchValue: string
 }

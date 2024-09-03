@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 
 const emit = defineEmits(['update:modelValue', 'keydown.enter'])
 
-defineProps({
+const props = defineProps({
   modelValue: {
     type: String
   },
@@ -12,7 +12,7 @@ defineProps({
   }
 })
 
-const inputText = ref('')
+const inputText = ref(props.modelValue)
 
 watch(inputText, (newValue) => {
   inputText.value = newValue
