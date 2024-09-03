@@ -63,7 +63,12 @@ watch(currentListId, (newVal) => {
           "
           textOnHover
           v-model="currentListId"
-          @subclick="openNameEdit = true"
+          @subclick="
+            (event) => {
+              event.stopPropagation()
+              openNameEdit = true
+            }
+          "
           disable-unselect
         />
         <PixelTitle

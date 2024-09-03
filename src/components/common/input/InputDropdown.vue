@@ -92,7 +92,7 @@ const valueLabels = computed(
           'flex gap-2 pixel-sunken-shadow bg-brown-400 p-1 px-2 flex-grow justify-center text-center',
           textOnHover ? 'hover:cursor-text' : ''
         ]"
-        @click.stop="$emit('subclick')"
+        @click="(event) => $emit('subclick', event)"
       >
         <PixelText v-if="modelValue && modelValue.length" class="text-ellipsis">
           {{ isAllSelected ? selectAll : valueLabels.join(', ') }}
