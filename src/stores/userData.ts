@@ -10,9 +10,14 @@ import {
   type UserData,
   type ViewFilters
 } from '@/types'
-import { RoomBundleItems, Sprites, type RoomBundleItem } from '@/data'
-import { ForagingLocations, SourceType } from '@/data/types'
-import { useDebounceFn } from '@vueuse/core'
+import {
+  BundleItemIdsMap,
+  BundleItemRequiredMap,
+  RoomBundleItems,
+  Sprites,
+  type RoomBundleItem
+} from '@/data'
+import { ForagingLocations, SourceType, type BundleTypes } from '@/data/types'
 
 const STARDEW_COMMUNITY_LIST_USER_STORAGE_KEY = '@stardew-my-community-list-user'
 const STARDEW_COMMUNITY_LIST_LIST_STORAGE_KEY = '@stardew-my-community-list-list'
@@ -80,7 +85,8 @@ export const useUserDataStore = defineStore('userData', () => {
     room: [],
     bundle: [],
     status: [],
-    searchValue: ''
+    searchValue: '',
+    hideUnecessaryItems: false
   })
 
   const checklistData = reactive<Checklist>({
@@ -157,6 +163,7 @@ export const useUserDataStore = defineStore('userData', () => {
     dataFilters.bundle = []
     dataFilters.status = []
     dataFilters.searchValue = ''
+    dataFilters.hideUnecessaryItems = false
     storeFilters()
   }
 
@@ -177,6 +184,7 @@ export const useUserDataStore = defineStore('userData', () => {
       dataFilters.bundle = localDataFilters.bundle
       dataFilters.status = localDataFilters.status
       dataFilters.searchValue = localDataFilters.searchValue
+      dataFilters.hideUnecessaryItems = localDataFilters.hideUnecessaryItems
     } else {
       setNewDataFilter()
     }
@@ -322,10 +330,34 @@ export const useUserDataStore = defineStore('userData', () => {
     )
   )
 
-  // const completedBundles = computed(() =>
-  //   checklistData.checklistData.filter((item) => item.status === CheckListStatus.Completed).length
+  /**
+   * Map of bundles with items that are either acquired, in progress or submitted
+   *
+   * @example
+   * {
+   *   'Spring Foraging Bundle': true,
+   *   'Summer Foraging Bundle': false,
+   *   ...
+   * }
+   */
+  const completedBundles = computed(() =>
+    Object.keys(BundleItemIdsMap).reduce(
+      (acc, itemKey) => {
+        const bundleItemKey = itemKey as BundleTypes
+        const completedBundleItems = BundleItemIdsMap[bundleItemKey].flatMap((itemId) =>
+          statusItems.value[itemId] && statusItems.value[itemId].status !== CheckListStatus.ToDo
+            ? statusItems.value[itemId].bundleItem
+            : []
+        )
 
-  // )
+        return {
+          ...acc,
+          [itemKey]: completedBundleItems.length >= BundleItemRequiredMap[bundleItemKey]
+        }
+      },
+      {} as Record<BundleTypes, boolean>
+    )
+  )
 
   const setStatus = (bundleItem: string, status: CheckListStatus) => {
     const localStatusItems = { ...statusItems.value, [bundleItem]: { bundleItem, status } }
@@ -503,6 +535,7 @@ export const useUserDataStore = defineStore('userData', () => {
     checklist,
     checklistData,
     checklistItems,
+    completedBundles,
     userData,
     reloadListNames,
     listNames,

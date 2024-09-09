@@ -45,4 +45,5 @@ export type DataFilters = {
   bundle: BundleTypes[]
   status: CheckListStatus[]
   searchValue: string
+  hideUnecessaryItems: boolean
 }
