@@ -4,6 +4,7 @@ import {
   CheckListStatus,
   type Checklist,
   type ChecklistItem,
+  type ChecklistItems,
   type DataFilters,
   type GlobalFilters,
   type UserData,
@@ -15,6 +16,7 @@ import { useDebounceFn } from '@vueuse/core'
 
 const STARDEW_COMMUNITY_LIST_USER_STORAGE_KEY = '@stardew-my-community-list-user'
 const STARDEW_COMMUNITY_LIST_LIST_STORAGE_KEY = '@stardew-my-community-list-list'
+const STARDEW_COMMUNITY_LIST_LIST_ITEM_STORAGE_KEY = '@stardew-my-community-list-list-item'
 const STARDEW_COMMUNITY_LIST_DATA_FILTERS_STORAGE_KEY = '@stardew-my-community-list-data-filters'
 const STARDEW_COMMUNITY_LIST_VIEW_FILTERS_STORAGE_KEY = '@stardew-my-community-list-view-filters'
 const STARDEW_COMMUNITY_LIST_GLOBAL_FILTERS_STORAGE_KEY =
@@ -84,10 +86,10 @@ export const useUserDataStore = defineStore('userData', () => {
   const checklistData = reactive<Checklist>({
     listName: '',
     ownerId: '',
-    listId: '',
-    checklistData: [],
-    lastUpdated: ''
+    listId: ''
   })
+
+  const checklistItems = reactive<ChecklistItems>([])
 
   const userData = reactive<UserData>({
     userId: '',
@@ -95,20 +97,20 @@ export const useUserDataStore = defineStore('userData', () => {
     listIds: []
   })
 
-  const checklistStorageKey = computed(
-    () => `${STARDEW_COMMUNITY_LIST_LIST_STORAGE_KEY}-${userData.currentListId}`
-  )
+  const getChecklistStorageKey = () =>
+    `${STARDEW_COMMUNITY_LIST_LIST_STORAGE_KEY}-${userData.currentListId}`
 
-  const checklistDataFilterKey = computed(
-    () => `${STARDEW_COMMUNITY_LIST_DATA_FILTERS_STORAGE_KEY}-${userData.currentListId}`
-  )
+  const getChecklistItemsStorageKey = () =>
+    `${STARDEW_COMMUNITY_LIST_LIST_ITEM_STORAGE_KEY}-${userData.currentListId}`
 
-  const checklistViewFilterKey = computed(
-    () => `${STARDEW_COMMUNITY_LIST_VIEW_FILTERS_STORAGE_KEY}-${userData.currentListId}`
-  )
-  const checklistGlobalFilterKey = computed(
-    () => `${STARDEW_COMMUNITY_LIST_GLOBAL_FILTERS_STORAGE_KEY}-${userData.currentListId}`
-  )
+  const getChecklistDataFilterKey = () =>
+    `${STARDEW_COMMUNITY_LIST_DATA_FILTERS_STORAGE_KEY}-${userData.currentListId}`
+
+  const getChecklistViewFilterKey = () =>
+    `${STARDEW_COMMUNITY_LIST_VIEW_FILTERS_STORAGE_KEY}-${userData.currentListId}`
+
+  const getChecklistGlobalFilterKey = () =>
+    `${STARDEW_COMMUNITY_LIST_GLOBAL_FILTERS_STORAGE_KEY}-${userData.currentListId}`
 
   const listNames = ref<{ value: string; label: string }[]>([])
 
@@ -129,13 +131,12 @@ export const useUserDataStore = defineStore('userData', () => {
     })
   }
 
-  const debouncedChecklistData = useDebounceFn(() => {
-    localStorage.setItem(checklistStorageKey.value, JSON.stringify(checklistData))
-  }, 1000)
-
   const storeChecklistData = () => {
-    checklistData.lastUpdated = new Date().toISOString()
-    debouncedChecklistData()
+    localStorage.setItem(getChecklistStorageKey(), JSON.stringify(checklistData))
+  }
+
+  const storeChecklistListItem = () => {
+    localStorage.setItem(getChecklistItemsStorageKey(), JSON.stringify(checklistItems))
   }
 
   const storeUserData = () => {
@@ -143,8 +144,8 @@ export const useUserDataStore = defineStore('userData', () => {
   }
 
   const storeFilters = () => {
-    localStorage.setItem(checklistDataFilterKey.value, JSON.stringify(dataFilters))
-    localStorage.setItem(checklistViewFilterKey.value, JSON.stringify(viewFilters))
+    localStorage.setItem(getChecklistDataFilterKey(), JSON.stringify(dataFilters))
+    localStorage.setItem(getChecklistViewFilterKey(), JSON.stringify(viewFilters))
   }
 
   const setNewDataFilter = () => {
@@ -165,7 +166,7 @@ export const useUserDataStore = defineStore('userData', () => {
   }
 
   const setFilters = () => {
-    const dataFiltersData = localStorage.getItem(checklistDataFilterKey.value)
+    const dataFiltersData = localStorage.getItem(getChecklistDataFilterKey())
     if (dataFiltersData) {
       const localDataFilters = JSON.parse(dataFiltersData) as DataFilters
       dataFilters.onlyShowSelectedDetails = localDataFilters.onlyShowSelectedDetails
@@ -180,7 +181,7 @@ export const useUserDataStore = defineStore('userData', () => {
       setNewDataFilter()
     }
 
-    const viewFiltersData = localStorage.getItem(checklistViewFilterKey.value)
+    const viewFiltersData = localStorage.getItem(getChecklistViewFilterKey())
     if (viewFiltersData) {
       const localViewFilters = JSON.parse(viewFiltersData) as ViewFilters
       viewFilters.isVerboseList = localViewFilters.isVerboseList
@@ -190,7 +191,7 @@ export const useUserDataStore = defineStore('userData', () => {
   }
 
   const storeGlobalFilters = () => {
-    localStorage.setItem(checklistGlobalFilterKey.value, JSON.stringify(globalFilters))
+    localStorage.setItem(getChecklistGlobalFilterKey(), JSON.stringify(globalFilters))
   }
 
   const setNewGlobalFilters = () => {
@@ -200,7 +201,7 @@ export const useUserDataStore = defineStore('userData', () => {
   }
 
   const setGlobalFilters = () => {
-    const globalFiltersData = localStorage.getItem(checklistGlobalFilterKey.value)
+    const globalFiltersData = localStorage.getItem(getChecklistGlobalFilterKey())
 
     if (globalFiltersData) {
       const localGlobalFilters = JSON.parse(globalFiltersData) as GlobalFilters
@@ -211,34 +212,41 @@ export const useUserDataStore = defineStore('userData', () => {
     }
   }
 
+  const setChecklistItems = () => {
+    console.log('ahahahahha', getChecklistItemsStorageKey())
+    const checklistItemsData = localStorage.getItem(getChecklistItemsStorageKey())
+    if (checklistItemsData) {
+      const localChecklistItems = JSON.parse(checklistItemsData) as ChecklistItems
+      checklistItems.length = 0
+      checklistItems.push(...localChecklistItems)
+    }
+  }
+
   const setChecklistData = () => {
-    const checklistdata = localStorage.getItem(checklistStorageKey.value)
+    const checklistdata = localStorage.getItem(getChecklistStorageKey())
     if (checklistdata) {
       const localChecklistData = JSON.parse(checklistdata) as Checklist
       checklistData.ownerId = localChecklistData.ownerId
       checklistData.listName = localChecklistData.listName
       checklistData.listId = localChecklistData.listId
-      checklistData.checklistData = localChecklistData.checklistData
-      checklistData.lastUpdated = localChecklistData.lastUpdated
     }
   }
 
   const createNewCheckList = () => {
     const newListId = window.crypto.randomUUID()
 
+    userData.currentListId = newListId
+    userData.listIds.push(newListId)
+    storeUserData()
+
     checklistData.ownerId = userData.userId
     checklistData.listName = `My List${userData.listIds.length > 0 ? ' ' + userData.listIds.length : ''}`
     checklistData.listId = newListId
-    checklistData.checklistData = []
-    checklistData.lastUpdated = new Date().toISOString()
+    checklistItems.length = 0
 
     storeChecklistData()
+    storeChecklistListItem()
     setNewGlobalFilters()
-
-    userData.currentListId = newListId
-    userData.listIds.push(newListId)
-
-    storeUserData()
   }
 
   const createNewCheckListData = () => {
@@ -261,6 +269,7 @@ export const useUserDataStore = defineStore('userData', () => {
         if (userData.listIds.includes(listId)) {
           userData.currentListId = listId
           setChecklistData()
+          setChecklistItems()
           setGlobalFilters()
         }
 
@@ -277,9 +286,11 @@ export const useUserDataStore = defineStore('userData', () => {
         } else {
           userData.currentListId = userData.listIds[0]
           setChecklistData()
+          setChecklistItems()
         }
       } else {
         setChecklistData()
+        setChecklistItems()
       }
     } else {
       userData.currentListId = ''
@@ -295,6 +306,7 @@ export const useUserDataStore = defineStore('userData', () => {
         }
       } else {
         createNewCheckList()
+        setChecklistItems()
       }
 
       storeUserData()
@@ -304,7 +316,7 @@ export const useUserDataStore = defineStore('userData', () => {
   }
 
   const statusItems = computed(() =>
-    checklistData.checklistData.reduce(
+    checklistItems.reduce(
       (acc, item) => ({ ...acc, [item.bundleItem]: item }),
       {} as Record<string, ChecklistItem>
     )
@@ -316,12 +328,11 @@ export const useUserDataStore = defineStore('userData', () => {
   // )
 
   const setStatus = (bundleItem: string, status: CheckListStatus) => {
-    const localStatusItems: ChecklistItem[] = [
-      ...Object.values(statusItems.value),
-      { bundleItem, status, lastUpdated: new Date().toISOString() }
-    ]
-    checklistData.checklistData = localStatusItems
-    storeChecklistData()
+    const localStatusItems = { ...statusItems.value, [bundleItem]: { bundleItem, status } }
+
+    checklistItems.length = 0
+    checklistItems.push(...Object.values(localStatusItems))
+    storeChecklistListItem()
   }
 
   const statusSort = (a: RoomBundleItem, b: RoomBundleItem) =>
@@ -482,6 +493,7 @@ export const useUserDataStore = defineStore('userData', () => {
 
   const reloadData = () => {
     setChecklistData()
+    setChecklistItems()
     setFilters()
     setGlobalFilters()
   }
@@ -490,6 +502,7 @@ export const useUserDataStore = defineStore('userData', () => {
     statusItems,
     checklist,
     checklistData,
+    checklistItems,
     userData,
     reloadListNames,
     listNames,

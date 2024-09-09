@@ -31,6 +31,7 @@ import { Quality } from '@/data/types'
 import { useUserDataStore } from '@/stores/userData'
 import { CheckListStatus } from '@/types'
 import StatusDropdown from '../common/input/StatusDropdown.vue'
+import { storeToRefs } from 'pinia'
 
 const props = defineProps({
   item: {
@@ -42,9 +43,13 @@ const props = defineProps({
 const itemSprite = computed(() => Sprites[props.item.item.spriteId])
 
 const userData = useUserDataStore()
+const statusItems = storeToRefs(userData).statusItems
 
-const itemStatus = ref(userData.statusItems?.[props.item.id]?.status ?? CheckListStatus.ToDo)
-watch(itemStatus, (value) => userData.setStatus(props.item.id, value))
+const itemStatus = ref(statusItems?.value?.[props.item.id]?.status ?? CheckListStatus.ToDo)
+watch(itemStatus, (value) => userData.setStatus?.(props.item.id, value))
+watch(statusItems, (value) => {
+  itemStatus.value = value?.[props.item.id]?.status ?? CheckListStatus.ToDo
+})
 </script>
 
 <template>

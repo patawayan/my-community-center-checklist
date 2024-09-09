@@ -11,16 +11,14 @@ export enum CheckListStatus {
 export type ChecklistItem = {
   bundleItem: string
   status: CheckListStatus
-  lastUpdated: string
 }
+
+export type ChecklistItems = ChecklistItem[]
 
 export type Checklist = {
   listId?: string
   listName: string
   ownerId: string
-  checklistData: ChecklistItem[]
-  lastUpdated: string
-  isMultiplayer?: boolean
 }
 
 export type UserData = {
