@@ -7,16 +7,16 @@ on:
     branches:
       - main
 jobs:
-  create_env:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          touch .env
-          echo VITE_FIREBASE_API_KEY=AIzaSyD0ysA2Hh0X5nx4donSALczNWzEivRo-bo >> .env
-          echo VITE_FIREBASE_DB_URL=https://my-community-center-list-default-rtdb.firebaseio.com/ >> .env
-          echo VITE_FIREBASE_PROJECT_ID=my-community-center-list >> .env
-          echo VITE_FIREBASE_APP_ID=1:529435335529:web:399197eef17703487dbbf8 >> .env
-          cat .env
+  # create_env:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: |
+  #         touch .env
+  #         echo VITE_FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }} >> .env
+  #         echo VITE_FIREBASE_DB_URL=${{ secrets.FIREBASE_DB_URL }} >> .env
+  #         echo VITE_FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }} >> .env
+  #         echo VITE_FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }} >> .env
+  #         cat .env
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
