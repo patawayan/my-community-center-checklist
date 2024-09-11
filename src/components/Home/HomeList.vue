@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Sprites } from '@/data'
 import ListItem from '../List/ListItem.vue'
-import { useUserDataStore } from '@/stores/userData'
 import ListItemCompact from '../List/ListItemCompact.vue'
 import ModalBody from '../common/ModalBody.vue'
 import { ref } from 'vue'
@@ -9,8 +8,9 @@ import type { Item } from '@/data/types'
 import PixelTitle from '../common/PixelTitle.vue'
 import PixelText from '../common/PixelText.vue'
 import SourceDetails from '../common/tags/SourceDetails.vue'
+import { useAppStore } from '@/stores/app'
 
-const userData = useUserDataStore()
+const userData = useAppStore()
 const isItemDetailsModalOpen = ref(false)
 const modalDetailData = ref<Item>()
 </script>
@@ -29,7 +29,7 @@ const modalDetailData = ref<Item>()
         v-for="item in userData.checklist"
         :key="`compact-${item.room}-${item.bundle}-${Sprites[item.item.spriteId] ? Sprites[item.item.spriteId].name : ''}`"
         :item="item"
-        @click="
+        @item-click="
           () => {
             isItemDetailsModalOpen = true
             modalDetailData = item.item

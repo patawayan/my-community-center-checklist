@@ -4,11 +4,11 @@ import BundleTag from '../common/tags/BundleTag.vue'
 import dropdownArrow from '@/assets/images/dropdown_arrow.png'
 import PixelText from '../common/PixelText.vue'
 import SourceDetails from '../common/tags/SourceDetails.vue'
-import { useUserDataStore } from '@/stores/userData'
 import StatusDropdown from '../common/input/StatusDropdown.vue'
 import PixelTitle from '../common/PixelTitle.vue'
-import { qualityImgSource, statusBgColor, useListItem } from './listitem'
+import { qualityImgSource, statusBgColor, useListItem } from './useListitem'
 import type { RoomBundleItem } from '@/data'
+import { useAppStore } from '@/stores/app'
 
 const props = defineProps({
   item: {
@@ -19,12 +19,12 @@ const props = defineProps({
 
 const { itemStatus, isNotNeeded, itemSprite } = useListItem(props.item)
 
-const userData = useUserDataStore()
+const userData = useAppStore()
 </script>
 
 <template>
   <div
-    class="w-full pt-2 relative"
+    :class="['w-full relative', isNotNeeded ? ' pt-0' : ' pt-2']"
     v-if="!isNotNeeded || !userData.dataFilters.hideUnecessaryItems"
   >
     <div
@@ -54,19 +54,17 @@ const userData = useUserDataStore()
       <div class="basis-1/6 flex justify-end">
         <StatusDropdown v-model="itemStatus" />
       </div>
-      <div
-        v-if="isNotNeeded"
-        class="absolute top-0 bottom-0 left-0 right-0 bg-grey-10 z-50 opacity-90"
-      ></div>
     </div>
-    <div class="absolute top-0 -left-1 flex items-center gap-2">
+    <div
+      :class="['absolute flex items-center gap-2', isNotNeeded ? 'top-1 left-1' : 'top-0 -left-1']"
+    >
       <RoomTag :room="item.room" />
       <img :src="dropdownArrow" alt="dropdown arrow" class="-rotate-90 w-4 h-2" />
       <BundleTag :bundle="item.bundle" />
     </div>
     <div
       v-if="isNotNeeded"
-      class="absolute top-0 bottom-0 left-0 right-0 min-w-full min-h-full flex"
+      class="absolute top-0 bottom-0 left-0 right-0 bg-grey-10 opacity-90 flex min-w-full min-h-full"
     >
       <PixelTitle size="xl" class="flex-grow flex items-center justify-center">
         Bundle Completed. No longer needed.

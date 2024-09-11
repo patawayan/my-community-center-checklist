@@ -16,9 +16,10 @@ export type ChecklistItem = {
 export type ChecklistItems = ChecklistItem[]
 
 export type Checklist = {
-  listId?: string
+  listId: string
   listName: string
   ownerId: string
+  isOnline: boolean
 }
 
 export type UserData = {
@@ -29,7 +30,6 @@ export type UserData = {
 
 export type GlobalFilters = {
   farmCaveType: ForagingLocations[]
-  lastUpdated: string
 }
 
 export type ViewFilters = {

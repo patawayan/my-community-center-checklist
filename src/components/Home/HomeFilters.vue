@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import InputCheckbox from '../common/input/InputCheckbox.vue'
 import InputDropdown from '../common/input/InputDropdown.vue'
 import { ForagingLocations, RoomBundleMap, RoomTypes, Seasons, SourceType } from '@/data/types'
 import InputText from '../common/input/InputText.vue'
-import { SortTypes, useUserDataStore } from '@/stores/userData'
 import { CheckListStatus } from '@/types'
+import { SortTypes } from '@/utils/sort'
+import { useAppStore } from '@/stores/app'
+import { storeToRefs } from 'pinia'
 
-const userData = useUserDataStore()
+const userData = useAppStore()
 
 const computedBundleOptions = computed(() => {
   return userData.dataFilters.room.length > 0
@@ -27,6 +29,13 @@ const computedBundleOptions = computed(() => {
 })
 
 const searchValue = ref('')
+
+const viewFilters = storeToRefs(userData).viewFilters
+watch(viewFilters.value, (newVal) => {
+  if (!newVal.isVerboseList) {
+    userData.dataFilters.onlyShowSelectedDetails = false
+  }
+})
 </script>
 
 <template>
@@ -35,7 +44,11 @@ const searchValue = ref('')
       <InputCheckbox v-model="userData.viewFilters.isVerboseList" class="max-w-full">
         Show All Details
       </InputCheckbox>
-      <InputCheckbox v-model="userData.dataFilters.onlyShowSelectedDetails" class="pl-2 w-full">
+      <InputCheckbox
+        v-if="userData.viewFilters.isVerboseList"
+        v-model="userData.dataFilters.onlyShowSelectedDetails"
+        class="pl-2 w-full"
+      >
         Only Show Details Selected
       </InputCheckbox>
       <InputCheckbox v-model="userData.dataFilters.hideUnecessaryItems" class="w-full">

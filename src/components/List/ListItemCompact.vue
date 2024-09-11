@@ -9,9 +9,9 @@ import { SourceType } from '@/data/types'
 import StatusDropdown from '../common/input/StatusDropdown.vue'
 import SeasonTag from '../common/tags/SeasonTag.vue'
 import SourceTag from '../common/tags/SourceTag.vue'
-import { qualityImgSource, statusBgColor, useListItem } from './listitem'
-import { useUserDataStore } from '@/stores/userData'
+import { qualityImgSource, statusBgColor, useListItem } from './useListitem'
 import PixelTitle from '../common/PixelTitle.vue'
+import { useAppStore } from '@/stores/app'
 
 const props = defineProps({
   item: {
@@ -38,7 +38,7 @@ const itemSources = computed(() => {
   ]
 })
 
-const userData = useUserDataStore()
+const userData = useAppStore()
 </script>
 
 <template>
@@ -53,7 +53,13 @@ const userData = useUserDataStore()
       </div>
       <div
         class="basis-1/5 flex gap-3 items-center hover:cursor-pointer hover:opacity-70"
-        @click="$emit('item-click')"
+        @click="
+          () => {
+            if (!isNotNeeded) {
+              $emit('item-click')
+            }
+          }
+        "
       >
         <div class="w-10 relative">
           <img

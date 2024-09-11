@@ -1,5 +1,7 @@
-import { ref, computed, watch, reactive } from 'vue'
 import { defineStore } from 'pinia'
+import { useAlerts } from './alert'
+import { useClipboard } from '@vueuse/core'
+import { computed, reactive, ref, watch } from 'vue'
 import {
   CheckListStatus,
   type Checklist,
@@ -11,59 +13,67 @@ import {
   type ViewFilters
 } from '@/types'
 import {
+  getLocalCheckListData,
+  getLocalChecklistListItem,
+  getLocalDataFilters,
+  getLocalGlobalFilters,
+  getLocalUserData,
+  getLocalViewFilters,
+  storeLocalChecklistData,
+  storeLocalChecklistListItem,
+  storeLocalDataFilters,
+  storeLocalGlobalFilters,
+  storeLocalUserData,
+  storeLocalViewFilters
+} from '@/utils/localStorage'
+import { onValue } from 'firebase/database'
+import {
+  createChecklist,
+  doesChecklistExist,
+  getChecklistItemsRef,
+  getChecklistRef,
+  getGlobalFilterRef,
+  storeOnlineChecklistData,
+  storeOnlineChecklistListItems,
+  storeOnlineGlobalFilters
+} from '@/firebase'
+import { bundleSort, nameSort, roomSort, SortTypes, sourceSort } from '@/utils/sort'
+import {
   BundleItemIdsMap,
   BundleItemRequiredMap,
   RoomBundleItems,
   Sprites,
   type RoomBundleItem
 } from '@/data'
-import { ForagingLocations, SourceType, type BundleTypes } from '@/data/types'
+import { ForagingLocations, type BundleTypes, type SourceType } from '@/data/types'
+import { generateRandomKey } from '@/utils/text'
 
-const STARDEW_COMMUNITY_LIST_USER_STORAGE_KEY = '@stardew-my-community-list-user'
-const STARDEW_COMMUNITY_LIST_LIST_STORAGE_KEY = '@stardew-my-community-list-list'
-const STARDEW_COMMUNITY_LIST_LIST_ITEM_STORAGE_KEY = '@stardew-my-community-list-list-item'
-const STARDEW_COMMUNITY_LIST_DATA_FILTERS_STORAGE_KEY = '@stardew-my-community-list-data-filters'
-const STARDEW_COMMUNITY_LIST_VIEW_FILTERS_STORAGE_KEY = '@stardew-my-community-list-view-filters'
-const STARDEW_COMMUNITY_LIST_GLOBAL_FILTERS_STORAGE_KEY =
-  '@stardew-my-community-list-global-filters'
+export const useAppStore = defineStore('appStore', () => {
+  const { addAlert } = useAlerts()
+  const { copy } = useClipboard()
 
-export enum SortTypes {
-  Name = 'Name',
-  Room = 'Room',
-  Bundle = 'Bundle',
-  Source = 'Source',
-  Status = 'Status'
-}
+  /** Unsubscribe function for check list  */
+  const checklistDataUnsubscribe = ref()
+  /** Unsubscribe function for check list items */
+  const checklistItemUnsubscribe = ref()
+  /** Unsubscribe function for globalFilters */
+  const globalFiltersUnsubscribe = ref()
 
-const roomSort = (a: RoomBundleItem, b: RoomBundleItem) => a.room.localeCompare(b.room)
-const bundleSort = (a: RoomBundleItem, b: RoomBundleItem) => a.bundle.localeCompare(b.bundle)
-
-const sourceSort = (a: RoomBundleItem, b: RoomBundleItem) => {
-  if (
-    a.item.sourceDetails[0].sources[0].__typename &&
-    b.item.sourceDetails[0].sources[0].__typename
-  ) {
-    return a.item.sourceDetails[0].sources[0].__typename?.localeCompare(
-      b.item.sourceDetails[0].sources[0].__typename
-    )
+  /**
+   * Unsubscribe functions for the realtime database listeners
+   */
+  const unsubscribeListeners = () => {
+    checklistDataUnsubscribe?.value?.()
+    checklistItemUnsubscribe?.value?.()
+    globalFiltersUnsubscribe?.value?.()
   }
-  return 0
-}
 
-const nameSort = (a: RoomBundleItem, b: RoomBundleItem) =>
-  Sprites[a.item.spriteId].name.localeCompare(Sprites[b.item.spriteId].name)
-
-/**
- * Store for user data
- */
-export const useUserDataStore = defineStore('userData', () => {
   /**
    * Filters applied to all users (multiplayer)
    * Can only be edited by list owner
    */
   const globalFilters = reactive<GlobalFilters>({
-    farmCaveType: [],
-    lastUpdated: ''
+    farmCaveType: []
   })
 
   /**
@@ -89,45 +99,41 @@ export const useUserDataStore = defineStore('userData', () => {
     hideUnecessaryItems: false
   })
 
+  /**
+   * Data for the current checklist
+   */
   const checklistData = reactive<Checklist>({
     listName: '',
     ownerId: '',
-    listId: ''
+    listId: '',
+    isOnline: false
   })
 
+  /**
+   * Items in the checklist
+   */
   const checklistItems = reactive<ChecklistItems>([])
 
+  /**
+   * Local user data
+   */
   const userData = reactive<UserData>({
     userId: '',
     currentListId: '',
     listIds: []
   })
 
-  const getChecklistStorageKey = () =>
-    `${STARDEW_COMMUNITY_LIST_LIST_STORAGE_KEY}-${userData.currentListId}`
-
-  const getChecklistItemsStorageKey = () =>
-    `${STARDEW_COMMUNITY_LIST_LIST_ITEM_STORAGE_KEY}-${userData.currentListId}`
-
-  const getChecklistDataFilterKey = () =>
-    `${STARDEW_COMMUNITY_LIST_DATA_FILTERS_STORAGE_KEY}-${userData.currentListId}`
-
-  const getChecklistViewFilterKey = () =>
-    `${STARDEW_COMMUNITY_LIST_VIEW_FILTERS_STORAGE_KEY}-${userData.currentListId}`
-
-  const getChecklistGlobalFilterKey = () =>
-    `${STARDEW_COMMUNITY_LIST_GLOBAL_FILTERS_STORAGE_KEY}-${userData.currentListId}`
-
+  /** A list of all the locally available checklist */
   const listNames = ref<{ value: string; label: string }[]>([])
 
+  /** Reloads the list of local checklists */
   const reloadListNames = () => {
     listNames.value = userData.listIds.map((listId) => {
-      const listData = localStorage.getItem(`${STARDEW_COMMUNITY_LIST_LIST_STORAGE_KEY}-${listId}`)
+      const listData = getLocalCheckListData(listId)
       if (listData) {
-        const parsedListData = JSON.parse(listData) as Checklist
         return {
           value: listId,
-          label: parsedListData.listName
+          label: listData.listName
         }
       }
       return {
@@ -137,45 +143,9 @@ export const useUserDataStore = defineStore('userData', () => {
     })
   }
 
-  const storeChecklistData = () => {
-    localStorage.setItem(getChecklistStorageKey(), JSON.stringify(checklistData))
-  }
-
-  const storeChecklistListItem = () => {
-    localStorage.setItem(getChecklistItemsStorageKey(), JSON.stringify(checklistItems))
-  }
-
-  const storeUserData = () => {
-    localStorage.setItem(STARDEW_COMMUNITY_LIST_USER_STORAGE_KEY, JSON.stringify(userData))
-  }
-
-  const storeFilters = () => {
-    localStorage.setItem(getChecklistDataFilterKey(), JSON.stringify(dataFilters))
-    localStorage.setItem(getChecklistViewFilterKey(), JSON.stringify(viewFilters))
-  }
-
-  const setNewDataFilter = () => {
-    dataFilters.onlyShowSelectedDetails = false
-    dataFilters.sortBy = []
-    dataFilters.season = []
-    dataFilters.source = []
-    dataFilters.room = []
-    dataFilters.bundle = []
-    dataFilters.status = []
-    dataFilters.searchValue = ''
-    dataFilters.hideUnecessaryItems = false
-    storeFilters()
-  }
-
-  const setNewViewFilter = () => {
-    viewFilters.isVerboseList = true
-    storeFilters()
-  }
-
-  const setFilters = () => {
-    const dataFiltersData = localStorage.getItem(getChecklistDataFilterKey())
-    if (dataFiltersData) {
-      const localDataFilters = JSON.parse(dataFiltersData) as DataFilters
+  const setDataFilters = () => {
+    const localDataFilters = getLocalDataFilters(checklistData.listId)
+    if (localDataFilters) {
       dataFilters.onlyShowSelectedDetails = localDataFilters.onlyShowSelectedDetails
       dataFilters.sortBy = localDataFilters.sortBy
       dataFilters.season = localDataFilters.season
@@ -186,141 +156,199 @@ export const useUserDataStore = defineStore('userData', () => {
       dataFilters.searchValue = localDataFilters.searchValue
       dataFilters.hideUnecessaryItems = localDataFilters.hideUnecessaryItems
     } else {
-      setNewDataFilter()
+      createNewDataFilter()
     }
+  }
 
-    const viewFiltersData = localStorage.getItem(getChecklistViewFilterKey())
-    if (viewFiltersData) {
-      const localViewFilters = JSON.parse(viewFiltersData) as ViewFilters
+  const setViewFilters = () => {
+    const localViewFilters = getLocalViewFilters(checklistData.listId)
+    if (localViewFilters) {
       viewFilters.isVerboseList = localViewFilters.isVerboseList
     } else {
-      setNewViewFilter()
+      createNewViewFilter()
     }
-  }
-
-  const storeGlobalFilters = () => {
-    localStorage.setItem(getChecklistGlobalFilterKey(), JSON.stringify(globalFilters))
-  }
-
-  const setNewGlobalFilters = () => {
-    globalFilters.farmCaveType = []
-    globalFilters.lastUpdated = new Date().toISOString()
-    storeGlobalFilters()
   }
 
   const setGlobalFilters = () => {
-    const globalFiltersData = localStorage.getItem(getChecklistGlobalFilterKey())
+    const localGlobalFilters = getLocalGlobalFilters(checklistData.listId)
 
-    if (globalFiltersData) {
-      const localGlobalFilters = JSON.parse(globalFiltersData) as GlobalFilters
+    if (localGlobalFilters) {
       globalFilters.farmCaveType = localGlobalFilters.farmCaveType
-      globalFilters.lastUpdated = localGlobalFilters.lastUpdated
-    } else {
-      setNewGlobalFilters()
     }
   }
 
   const setChecklistItems = () => {
-    console.log('ahahahahha', getChecklistItemsStorageKey())
-    const checklistItemsData = localStorage.getItem(getChecklistItemsStorageKey())
-    if (checklistItemsData) {
-      const localChecklistItems = JSON.parse(checklistItemsData) as ChecklistItems
+    const localChecklistItems = getLocalChecklistListItem(checklistData.listId)
+    if (localChecklistItems) {
       checklistItems.length = 0
       checklistItems.push(...localChecklistItems)
     }
   }
 
-  const setChecklistData = () => {
-    const checklistdata = localStorage.getItem(getChecklistStorageKey())
-    if (checklistdata) {
-      const localChecklistData = JSON.parse(checklistdata) as Checklist
+  const setChecklistData = (listId: string) => {
+    const localChecklistData = getLocalCheckListData(listId)
+    if (localChecklistData) {
       checklistData.ownerId = localChecklistData.ownerId
       checklistData.listName = localChecklistData.listName
       checklistData.listId = localChecklistData.listId
+      checklistData.isOnline = !!localChecklistData.isOnline
     }
   }
 
+  const createNewDataFilter = () => {
+    dataFilters.onlyShowSelectedDetails = false
+    dataFilters.sortBy = []
+    dataFilters.season = []
+    dataFilters.source = []
+    dataFilters.room = []
+    dataFilters.bundle = []
+    dataFilters.status = []
+    dataFilters.searchValue = ''
+    dataFilters.hideUnecessaryItems = false
+    storeLocalDataFilters(checklistData.listId, dataFilters)
+  }
+
+  const createNewViewFilter = () => {
+    viewFilters.isVerboseList = true
+    storeLocalViewFilters(checklistData.listId, viewFilters)
+  }
+
+  const createNewGlobalFilters = () => {
+    globalFilters.farmCaveType = []
+    storeLocalGlobalFilters(checklistData.listId, globalFilters)
+  }
+
   const createNewCheckList = () => {
-    const newListId = window.crypto.randomUUID()
+    const newListId = generateRandomKey()
 
     userData.currentListId = newListId
     userData.listIds.push(newListId)
-    storeUserData()
+    storeLocalUserData(userData)
 
     checklistData.ownerId = userData.userId
     checklistData.listName = `My List${userData.listIds.length > 0 ? ' ' + userData.listIds.length : ''}`
     checklistData.listId = newListId
+    checklistData.isOnline = false
     checklistItems.length = 0
 
-    storeChecklistData()
-    storeChecklistListItem()
-    setNewGlobalFilters()
+    storeLocalChecklistData(checklistData)
+    storeLocalChecklistListItem(checklistData.listId, checklistItems)
+    createNewGlobalFilters()
+    createNewDataFilter()
+    createNewViewFilter()
+    reloadListNames()
   }
 
-  const createNewCheckListData = () => {
-    createNewCheckList()
-    setNewViewFilter()
-    setNewDataFilter()
+  const reloadData = async () => {
+    unsubscribeListeners()
+
+    if (await doesChecklistExist(userData.currentListId)) {
+      setOnlineList(userData.currentListId)
+    } else {
+      setChecklistData(userData.currentListId)
+
+      if (checklistData.isOnline) {
+        checklistData.isOnline = false
+        addAlert('Checklist set to offline', 'List does not exist online')
+      }
+      setChecklistItems()
+      setGlobalFilters()
+    }
+
+    setDataFilters()
+    setViewFilters()
   }
 
-  const loadData = (listId?: string) => {
-    const localUserDataStr = localStorage.getItem(STARDEW_COMMUNITY_LIST_USER_STORAGE_KEY)
+  /**
+   * Check if the current checklist is online, automatically sets the local data to offline if it isnt
+   */
+  const checkIfOnline = async (listId: string) => {
+    const isOnline = await doesChecklistExist(listId)
+    if (!isOnline) {
+      checklistData.isOnline = false
+    }
+    return isOnline
+  }
 
-    if (localUserDataStr) {
-      const localUserData = JSON.parse(localUserDataStr) as UserData
+  /**
+   * Assumes checklist is already online and sets the local data accordingly
+   */
+  const setOnlineList = async (listId: string) => {
+    const checklistRef = await getChecklistRef(listId)
+    checklistDataUnsubscribe.value = onValue(checklistRef, (snapshot) => {
+      const data: Checklist = snapshot.val()
+      if (data) {
+        checklistData.listName = data.listName
+        checklistData.ownerId = data.ownerId
+        checklistData.listId = data.listId
+        checklistData.isOnline = true
 
+        reloadListNames()
+      }
+    })
+
+    const checkListItemsRef = await getChecklistItemsRef(listId)
+    checklistItemUnsubscribe.value = onValue(checkListItemsRef, (snapshot) => {
+      const data: ChecklistItems = snapshot.val()
+      if (data) {
+        checklistItems.length = 0
+        checklistItems.push(...data)
+      }
+    })
+
+    const globalFiltersRef = await getGlobalFilterRef(listId)
+    globalFiltersUnsubscribe.value = onValue(globalFiltersRef, (snapshot) => {
+      const data: GlobalFilters = snapshot.val()
+      if (data) {
+        globalFilters.farmCaveType = data.farmCaveType
+      }
+    })
+
+    setDataFilters()
+    setViewFilters()
+  }
+
+  /**
+   * load data from local storage and check if online data is available
+   */
+  const loadData = async (listId?: string) => {
+    const localUserData = getLocalUserData()
+
+    if (localUserData) {
       userData.currentListId = localUserData.currentListId
       userData.userId = localUserData.userId
       userData.listIds = localUserData.listIds
 
       if (listId) {
-        if (userData.listIds.includes(listId)) {
-          userData.currentListId = listId
-          setChecklistData()
-          setChecklistItems()
-          setGlobalFilters()
-        }
-
-        //TODO: Pull Data Online
-        // If current list id is set then check whether local data is latest or online data, then update based on that
-
-        // If no data to pull then get from listIds
-        // if listIds is empty then create a new list
+        userData.currentListId = listId
       }
 
-      if (!userData.currentListId) {
-        if (userData.listIds.length == 0) {
-          createNewCheckList()
-        } else {
-          userData.currentListId = userData.listIds[0]
-          setChecklistData()
-          setChecklistItems()
+      if (await checkIfOnline(userData.currentListId)) {
+        if (!userData.listIds.includes(userData.currentListId)) {
+          userData.listIds.push(userData.currentListId)
         }
+
+        await setOnlineList(userData.currentListId)
+      } else if (userData.listIds.includes(userData.currentListId)) {
+        reloadData()
       } else {
-        setChecklistData()
-        setChecklistItems()
+        createNewCheckList()
       }
     } else {
       userData.currentListId = ''
-      userData.userId = window.crypto.randomUUID()
+      userData.userId = generateRandomKey()
       userData.listIds = []
 
       if (listId) {
-        // Pull Online
-
-        // if no list pulled online then create new list
-        if (!userData.currentListId) {
+        if (await checkIfOnline(listId)) {
+          await setOnlineList(listId)
+        } else {
           createNewCheckList()
         }
       } else {
         createNewCheckList()
-        setChecklistItems()
       }
-
-      storeUserData()
     }
-
-    setFilters()
   }
 
   const statusItems = computed(() =>
@@ -330,41 +358,15 @@ export const useUserDataStore = defineStore('userData', () => {
     )
   )
 
-  /**
-   * Map of bundles with items that are either acquired, in progress or submitted
-   *
-   * @example
-   * {
-   *   'Spring Foraging Bundle': true,
-   *   'Summer Foraging Bundle': false,
-   *   ...
-   * }
-   */
-  const completedBundles = computed(() =>
-    Object.keys(BundleItemIdsMap).reduce(
-      (acc, itemKey) => {
-        const bundleItemKey = itemKey as BundleTypes
-        const completedBundleItems = BundleItemIdsMap[bundleItemKey].flatMap((itemId) =>
-          statusItems.value[itemId] && statusItems.value[itemId].status !== CheckListStatus.ToDo
-            ? statusItems.value[itemId].bundleItem
-            : []
-        )
-
-        return {
-          ...acc,
-          [itemKey]: completedBundleItems.length >= BundleItemRequiredMap[bundleItemKey]
-        }
-      },
-      {} as Record<BundleTypes, boolean>
-    )
-  )
-
   const setStatus = (bundleItem: string, status: CheckListStatus) => {
     const localStatusItems = { ...statusItems.value, [bundleItem]: { bundleItem, status } }
 
     checklistItems.length = 0
     checklistItems.push(...Object.values(localStatusItems))
-    storeChecklistListItem()
+    storeLocalChecklistListItem(checklistData.listId, checklistItems)
+    if (checklistData.isOnline) {
+      storeOnlineChecklistListItems(checklistData.listId, checklistItems)
+    }
   }
 
   const statusSort = (a: RoomBundleItem, b: RoomBundleItem) =>
@@ -383,7 +385,7 @@ export const useUserDataStore = defineStore('userData', () => {
   /**
    * Filter the checklist based on the current filters
    */
-  const checklist = computed(() => {
+  const checklist = computed((): RoomBundleItem[] => {
     const {
       source: localSource,
       room: localRoom,
@@ -496,39 +498,86 @@ export const useUserDataStore = defineStore('userData', () => {
     return localSortBy.length > 0
       ? localSortBy
           .reverse()
-          .reduce((items, sortBy) => items.sort(SortFunctions[sortBy]), finalBundleItem)
+          .reduce(
+            (items: RoomBundleItem[], sortBy: SortTypes) => items.sort(SortFunctions[sortBy]),
+            finalBundleItem as RoomBundleItem[]
+          )
       : finalBundleItem
   })
 
+  /**
+   * Map of bundles with items that are either acquired, in progress or submitted
+   *
+   * @example
+   * {
+   *   'Spring Foraging Bundle': true,
+   *   'Summer Foraging Bundle': false,
+   *   ...
+   * }
+   */
+  const completedBundles = computed(() =>
+    Object.keys(BundleItemIdsMap).reduce(
+      (acc, itemKey) => {
+        const bundleItemKey = itemKey as BundleTypes
+        const completedBundleItems = BundleItemIdsMap[bundleItemKey].flatMap((itemId) =>
+          statusItems.value[itemId] && statusItems.value[itemId].status !== CheckListStatus.ToDo
+            ? statusItems.value[itemId].bundleItem
+            : []
+        )
+
+        return {
+          ...acc,
+          [itemKey]: completedBundleItems.length >= BundleItemRequiredMap[bundleItemKey]
+        }
+      },
+      {} as Record<BundleTypes, boolean>
+    )
+  )
+
+  const createDatabaseList = async () => {
+    const doesExist = await doesChecklistExist(checklistData.listId)
+    if (!doesExist) {
+      checklistData.isOnline = true
+      await createChecklist(checklistData, checklistItems, globalFilters)
+
+      await setOnlineList(checklistData.listId)
+    }
+    copy(window.location.origin + '/' + checklistData.listId)
+    addAlert(
+      'Shareable link copied to clipboard!',
+      doesExist ? 'Shareable URL Copied' : 'List created'
+    )
+  }
+
   // Save the data filters to local storage
   watch(dataFilters, () => {
-    storeFilters()
+    storeLocalDataFilters(checklistData.listId, dataFilters)
   })
 
+  // save the view filters to local storage
   watch(viewFilters, () => {
-    storeFilters()
+    storeLocalViewFilters(checklistData.listId, viewFilters)
   })
 
   // Save the data filters to local storage
   watch(globalFilters, () => {
-    storeFilters()
+    storeLocalGlobalFilters(checklistData.listId, globalFilters)
+    if (checklistData.isOnline) {
+      storeOnlineGlobalFilters(checklistData.listId, globalFilters)
+    }
   })
 
-  watch(checklistData, () => {
-    storeChecklistData()
+  watch(checklistData, async () => {
+    storeLocalChecklistData(checklistData)
     reloadListNames()
+    if (checklistData.isOnline) {
+      await storeOnlineChecklistData(checklistData)
+    }
   })
 
   watch(userData, () => {
-    storeUserData()
+    storeLocalUserData(userData)
   })
-
-  const reloadData = () => {
-    setChecklistData()
-    setChecklistItems()
-    setFilters()
-    setGlobalFilters()
-  }
 
   return {
     statusItems,
@@ -536,15 +585,15 @@ export const useUserDataStore = defineStore('userData', () => {
     checklistData,
     checklistItems,
     completedBundles,
+    dataFilters,
+    globalFilters,
+    viewFilters,
     userData,
-    reloadListNames,
     listNames,
     reloadData,
     loadData,
     setStatus,
-    createNewCheckListData,
-    dataFilters,
-    globalFilters,
-    viewFilters
+    createNewCheckList,
+    createDatabaseList
   }
 })

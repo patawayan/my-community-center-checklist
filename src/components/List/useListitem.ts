@@ -1,12 +1,12 @@
 import { Sprites, type RoomBundleItem } from '@/data'
 import { Quality } from '@/data/types'
-import { useUserDataStore } from '@/stores/userData'
 import { CheckListStatus } from '@/types'
 import { storeToRefs } from 'pinia'
 import { ref, computed, watch, toValue } from 'vue'
 import goldQuality from '@/assets/images/quality_gold.png'
 import silverQuality from '@/assets/images/quality_silver.png'
 import iridiumQuality from '@/assets/images/quality_iridium.png'
+import { useAppStore } from '@/stores/app'
 
 export const qualityImgSource: Record<Quality, string> = {
   [Quality.Silver]: silverQuality,
@@ -30,7 +30,7 @@ export const useListItem = (bundleItem: RoomBundleItem) => {
 
   const itemSprite = computed(() => Sprites[item.item.spriteId])
 
-  const userData = useUserDataStore()
+  const userData = useAppStore()
   const statusItems = storeToRefs(userData).statusItems
   const completedBundles = storeToRefs(userData).completedBundles
 

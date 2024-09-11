@@ -2,11 +2,11 @@
 import HomeList from '../components/Home/HomeList.vue'
 import HomeHeader from '../components/Home/HomeHeader.vue'
 import { eventBus } from '@/utils/eventBus'
-import { useUserDataStore } from '@/stores/userData'
 import { useRoute } from 'vue-router'
 import DevInfoModal from '@/components/modal/DevInfoModal.vue'
+import { useAppStore } from '@/stores/app'
 
-const userData = useUserDataStore()
+const userData = useAppStore()
 const route = useRoute()
 
 userData.loadData(route.params?.listId?.toString() ?? undefined)

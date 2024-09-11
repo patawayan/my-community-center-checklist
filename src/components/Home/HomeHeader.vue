@@ -5,23 +5,24 @@ import funnelIcon from '@/assets/images/funnel_icon.png'
 import funnelIconX from '@/assets/images/funnel_icon_x.png'
 import { ref, watch } from 'vue'
 import HomeFilters from './HomeFilters.vue'
-import { useUserDataStore } from '@/stores/userData'
 import ModalBody from '../common/ModalBody.vue'
 import InputText from '../common/input/InputText.vue'
 import { onClickOutside } from '@vueuse/core'
 import InputDropdown from '../common/input/InputDropdown.vue'
+import { storeToRefs } from 'pinia'
+import { useAppStore } from '@/stores/app'
 
-const userData = useUserDataStore()
+const userDataStore = useAppStore()
 
 const isFilterOpen = ref(
-  userData.dataFilters.bundle.length > 0 ||
-    userData.dataFilters.room.length > 0 ||
-    userData.dataFilters.onlyShowSelectedDetails ||
-    userData.dataFilters.season.length > 0 ||
-    userData.dataFilters.source.length > 0 ||
-    userData.dataFilters.sortBy.length > 0 ||
-    !!userData.dataFilters.searchValue ||
-    userData.globalFilters.farmCaveType.length > 0
+  userDataStore.dataFilters.bundle.length > 0 ||
+    userDataStore.dataFilters.room.length > 0 ||
+    userDataStore.dataFilters.onlyShowSelectedDetails ||
+    userDataStore.dataFilters.season.length > 0 ||
+    userDataStore.dataFilters.source.length > 0 ||
+    userDataStore.dataFilters.sortBy.length > 0 ||
+    !!userDataStore.dataFilters.searchValue ||
+    userDataStore.globalFilters.farmCaveType.length > 0
 )
 
 const openNewListModal = ref(false)
@@ -29,19 +30,21 @@ const openNewListModal = ref(false)
 const openNameEdit = ref(false)
 const newListName = ref<string>('')
 
-watch(newListName, (newVal) => {
-  userData.checklistData.listName = newVal
-})
-
 const listNameInput = ref(null)
 onClickOutside(listNameInput, () => {
   openNameEdit.value = false
 })
 
-const currentListId = ref<string[]>([userData.checklistData.listId ?? ''])
+const checklistData = storeToRefs(userDataStore).checklistData
+
+const currentListId = ref<string[]>([checklistData.value.listId ?? ''])
 watch(currentListId, (newVal) => {
-  userData.userData.currentListId = newVal[0]
-  userData.reloadData()
+  userDataStore.userData.currentListId = newVal[0]
+  userDataStore.reloadData()
+})
+
+watch(checklistData.value, (newVal) => {
+  currentListId.value = [newVal.listId]
 })
 </script>
 
@@ -52,11 +55,11 @@ watch(currentListId, (newVal) => {
 
       <div class="flex gap-3 w-max items-center">
         <InputDropdown
-          v-if="userData.listNames.length > 1 && !openNameEdit"
+          v-if="userDataStore.listNames.length > 1 && !openNameEdit"
           :options="
-            userData.listNames.map((name) => {
-              if (name.value === userData.userData.currentListId) {
-                return { label: userData.checklistData.listName, value: name.value }
+            userDataStore.listNames.map((name) => {
+              if (name.value === userDataStore.userData.currentListId) {
+                return { label: userDataStore.checklistData.listName, value: name.value }
               }
               return name
             })
@@ -66,7 +69,7 @@ watch(currentListId, (newVal) => {
           @subclick="
             (event) => {
               event.stopPropagation()
-              newListName = userData.checklistData.listName
+              newListName = userDataStore.checklistData.listName
               openNameEdit = true
             }
           "
@@ -77,11 +80,11 @@ watch(currentListId, (newVal) => {
           class="hover:cursor-pointer"
           @click="
             () => {
-              newListName = userData.checklistData.listName
+              newListName = userDataStore.checklistData.listName
               openNameEdit = true
             }
           "
-          >{{ userData.checklistData.listName }}</PixelTitle
+          >{{ userDataStore.checklistData.listName }}</PixelTitle
         >
         <InputText
           ref="listNameInput"
@@ -90,13 +93,15 @@ watch(currentListId, (newVal) => {
           placeholder="New List Name"
           @keydown.enter="
             () => {
-              userData.checklistData.listName = newListName
+              userDataStore.checklistData.listName = newListName
               openNameEdit = false
             }
           "
         />
 
-        <PixelButton v-if="false"> Play with Friends! </PixelButton>
+        <PixelButton @click="userDataStore.createDatabaseList()">
+          {{ userDataStore.checklistData.isOnline ? 'Copy Link to List' : 'Play with Friends!' }}
+        </PixelButton>
         <PixelButton @click="openNewListModal = true"> New List! </PixelButton>
 
         <PixelButton class="w-10" @click="isFilterOpen = !isFilterOpen">
@@ -111,7 +116,7 @@ watch(currentListId, (newVal) => {
         <PixelButton
           @click="
             () => {
-              userData.createNewCheckListData()
+              userDataStore.createNewCheckList()
               openNewListModal = false
             }
           "

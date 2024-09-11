@@ -1789,7 +1789,7 @@ export const items = {
         sources: [
           {
             __typename: 'Combat',
-            info: 'They drop the seeds, not the actual crop.',
+            info: '*They drop the seeds, not the actual crop.',
             locations: [
               {
                 location: CaveLocationCaves.SkullCavern,
