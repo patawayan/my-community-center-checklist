@@ -30,7 +30,7 @@ defineProps({
 </script>
 
 <template>
-  <h1 :class="['font-bold', titleSizes[size], noShadow ? '' : 'pixel-text-shadow']">
+  <h1 :class="['font-bold noselect', titleSizes[size], noShadow ? '' : 'pixel-text-shadow']">
     <slot></slot>
   </h1>
 </template>

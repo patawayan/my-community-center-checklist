@@ -22,7 +22,7 @@ defineProps({
 </script>
 
 <template>
-  <span :class="['pixel-text-shadow', textSizes[size]]">
+  <span :class="['pixel-text-shadow noselect', textSizes[size]]">
     <slot></slot>
   </span>
 </template>
