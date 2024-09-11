@@ -3,10 +3,10 @@ import { deleteApp, getApp, initializeApp, type FirebaseApp } from 'firebase/app
 import { child, get, getDatabase, ref, set } from 'firebase/database'
 
 const firebaseConfig = {
-  apiKey: process.env.VITE_FIREBASE_API_KEY,
-  databaseURL: process.env.VITE_FIREBASE_DB_URL,
-  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-  appId: process.env.VITE_FIREBASE_APP_ID
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  databaseURL: import.meta.env.VITE_FIREBASE_DB_URL,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 }
 
 console.log('aaaaaaaaa', firebaseConfig)
