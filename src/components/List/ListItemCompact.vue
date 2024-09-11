@@ -11,7 +11,6 @@ import SeasonTag from '../common/tags/SeasonTag.vue'
 import SourceTag from '../common/tags/SourceTag.vue'
 import { qualityImgSource, statusBgColor, useListItem } from './useListitem'
 import PixelTitle from '../common/PixelTitle.vue'
-import { useAppStore } from '@/stores/app'
 
 const props = defineProps({
   item: {
@@ -22,7 +21,7 @@ const props = defineProps({
 
 defineEmits(['item-click'])
 
-const { itemStatus, isNotNeeded, itemSprite } = useListItem(props.item)
+const { doShowItem, itemStatus, isNotNeeded, itemSprite } = useListItem(props.item)
 
 const itemSeasons = computed(() => {
   return [...new Set(props.item.item.sourceDetails.flatMap((source) => source.seasons))]
@@ -37,12 +36,10 @@ const itemSources = computed(() => {
     )
   ]
 })
-
-const userData = useAppStore()
 </script>
 
 <template>
-  <div class="w-full relative" v-if="!isNotNeeded || !userData.dataFilters.hideUnecessaryItems">
+  <div class="w-full relative" v-if="doShowItem">
     <div
       :class="['w-full py-2 px-5 pixel-shadow flex items-center gap-5', statusBgColor[itemStatus]]"
     >

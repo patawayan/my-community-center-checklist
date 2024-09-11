@@ -1,3 +1,7 @@
+/**
+ * Sort functions for the RoomBundleItems
+ */
+
 import { Sprites, type RoomBundleItem } from '@/data'
 
 export enum SortTypes {

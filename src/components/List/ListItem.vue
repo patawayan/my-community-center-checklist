@@ -8,7 +8,6 @@ import StatusDropdown from '../common/input/StatusDropdown.vue'
 import PixelTitle from '../common/PixelTitle.vue'
 import { qualityImgSource, statusBgColor, useListItem } from './useListitem'
 import type { RoomBundleItem } from '@/data'
-import { useAppStore } from '@/stores/app'
 
 const props = defineProps({
   item: {
@@ -17,16 +16,11 @@ const props = defineProps({
   }
 })
 
-const { itemStatus, isNotNeeded, itemSprite } = useListItem(props.item)
-
-const userData = useAppStore()
+const { doShowItem, itemStatus, isNotNeeded, itemSprite } = useListItem(props.item)
 </script>
 
 <template>
-  <div
-    :class="['w-full relative', isNotNeeded ? ' pt-0' : ' pt-2']"
-    v-if="!isNotNeeded || !userData.dataFilters.hideUnecessaryItems"
-  >
+  <div :class="['w-full relative', isNotNeeded ? ' pt-0' : ' pt-2']" v-if="doShowItem">
     <div
       :class="['w-full py-3 px-10 pixel-shadow flex items-center gap-5', statusBgColor[itemStatus]]"
     >
@@ -40,7 +34,8 @@ const userData = useAppStore()
           />
           <img :src="itemSprite.image" alt="dropdown arrow" class="w-full" />
         </div>
-        <PixelText v-if="item.quality" size="2xl">{{ item.quality }} Quality</PixelText>
+        <PixelText v-if="item.quality" size="2xl">{{ item.quality }} Quality </PixelText>
+        {{ doShowItem ? 'true' : 'false' }}
         <PixelText size="2xl" class="flex-grow">{{ itemSprite.name }}</PixelText>
         <PixelText v-if="item.quantity">x {{ item?.quantity }}</PixelText>
       </div>

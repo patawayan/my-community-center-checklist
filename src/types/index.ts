@@ -1,5 +1,5 @@
 import type { BundleTypes, ForagingLocations, RoomTypes, Seasons, SourceType } from '@/data/types'
-import type { SortTypes } from '@/stores/userData'
+import type { SortTypes } from '@/utils/sort'
 
 export enum CheckListStatus {
   ToDo = 'To Do',

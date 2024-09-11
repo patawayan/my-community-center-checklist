@@ -52,7 +52,7 @@ watch(viewFilters.value, (newVal) => {
         Only Show Details Selected
       </InputCheckbox>
       <InputCheckbox v-model="userData.dataFilters.hideUnecessaryItems" class="w-full">
-        Hide Unnecessary Items
+        Hide Done Items
       </InputCheckbox>
     </div>
     <div class="flex gap-2 basis-4/5 max-w-[80%]">

@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import { onClickOutside } from '@vueuse/core'
-
-import redX from '@/assets/images/red_x.png'
 import PixelTitle from './PixelTitle.vue'
-import { ref } from 'vue'
 
-const emit = defineEmits(['close'])
+defineEmits(['close'])
 defineProps({
   isOpen: {
     type: Boolean
