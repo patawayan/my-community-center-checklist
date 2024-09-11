@@ -11,12 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: |
+      - shell: bash
+        env:
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_DB_URL: ${{ secrets.FIREBASE_DB_URL }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+        run: |
           touch .env
-          echo VITE_FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }} >> .env
-          echo VITE_FIREBASE_DB_URL=${{ secrets.FIREBASE_DB_URL }} >> .env
-          echo VITE_FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }} >> .env
-          echo VITE_FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }} >> .env
+          echo VITE_FIREBASE_API_KEY=$FIREBASE_API_KEY >> .env
+          echo VITE_FIREBASE_DB_URL=$FIREBASE_DB_URL >> .env
+          echo VITE_FIREBASE_PROJECT_ID=$FIREBASE_PROJECT_ID >> .env
+          echo VITE_FIREBASE_APP_ID=$FIREBASE_APP_ID >> .env
           cat .env
       - run: npm install && echo '-----Install Done 👌-----' && npm run build-only && echo '-----Build Done 👌-----'
       - uses: FirebaseExtended/action-hosting-deploy@v0
