@@ -2,7 +2,12 @@ import type { Checklist, ChecklistItems, GlobalFilters } from '@/types'
 import { deleteApp, getApp, initializeApp, type FirebaseApp } from 'firebase/app'
 import { child, get, getDatabase, ref, set } from 'firebase/database'
 
-const firebaseConfig = {}
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  databaseURL: import.meta.env.VITE_FIREBASE_DB_URL,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
+}
 
 /**
  * ============ Firebase Functions ============
