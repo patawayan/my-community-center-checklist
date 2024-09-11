@@ -622,17 +622,17 @@ export const useAppStore = defineStore('appStore', () => {
 
   // --------------------- Watchers ---------------------
 
-  // Save the data filters to local storage
+  // Save the data filters to local storage when changes are made
   watch(dataFilters, () => {
     storeLocalDataFilters(checklistData.listId, dataFilters)
   })
 
-  // save the view filters to local storage
+  // save the view filters to local storage when changes are made
   watch(viewFilters, () => {
     storeLocalViewFilters(checklistData.listId, viewFilters)
   })
 
-  // Save the data filters to local storage
+  // Save the data filters to local storage when changes are made
   watch(globalFilters, () => {
     storeLocalGlobalFilters(checklistData.listId, globalFilters)
     if (checklistData.isOnline) {
@@ -640,6 +640,7 @@ export const useAppStore = defineStore('appStore', () => {
     }
   })
 
+  // Save the checklist items to local storage and online if available when changes are made
   watch(checklistData, async () => {
     storeLocalChecklistData(checklistData)
     reloadListNames()
@@ -648,6 +649,7 @@ export const useAppStore = defineStore('appStore', () => {
     }
   })
 
+  // Save the user data to local storage when changes are made
   watch(userData, () => {
     storeLocalUserData(userData)
   })
