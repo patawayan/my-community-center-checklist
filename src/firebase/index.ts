@@ -9,6 +9,8 @@ const firebaseConfig = {
   appId: process.env.VITE_FIREBASE_APP_ID
 }
 
+console.log('aaaaaaaaa', firebaseConfig)
+
 /**
  * ============ Firebase Functions ============
  */
