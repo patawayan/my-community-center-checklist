@@ -60,6 +60,7 @@ watch(viewFilters.value, (newVal) => {
         <InputDropdown
           v-model="userData.globalFilters.farmCaveType"
           class="w-full"
+          :disabled="!userData.isOwner"
           :options="
             [ForagingLocations.FruitBatFarmCave, ForagingLocations.MushroomFarmCave].map(
               (status) => ({

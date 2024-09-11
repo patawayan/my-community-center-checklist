@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, type PropType } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch, type PropType } from 'vue'
 
 import { eventBus } from '@/utils/eventBus'
 import { onClickOutside } from '@vueuse/core'
@@ -21,6 +21,10 @@ const props = defineProps({
   multiple: {
     type: Boolean,
     default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -31,23 +35,23 @@ const onSelect = (value: String) => {
   }
 }
 
-const dropdown = ref<Element>()
-const dropDownStyle = ref({})
+const dropdownOptions = ref<Element>()
+
+const clickPosition = ref({ x: 0, y: 0 })
+const dropdownSize = ref({ width: 0, height: 0 })
 
 const onScroll = () => {
   isOpen.value = false
+}
 
-  const { bottom = 0, left = 0 } = dropdown?.value?.getBoundingClientRect() ?? {}
-  const newBottom = bottom - 100 < 10 ? 100 : bottom - 100
-  const newLeft = left - 100 < 10 ? 100 : left - 100
-  dropDownStyle.value = {
-    top: `${newBottom}px`,
-    left: `${newLeft}px`
+const onClick = (event: MouseEvent) => {
+  if (!props.disabled) {
+    clickPosition.value = { x: event.clientX, y: event.clientY }
+    isOpen.value = true
   }
 }
 
 onMounted(() => {
-  onScroll()
   eventBus.on('listScroll', onScroll)
 })
 
@@ -55,7 +59,19 @@ onUnmounted(() => {
   eventBus.off('listScroll', onScroll)
 })
 
-const dropdownOptions = ref<Element>()
+watch(dropdownOptions, () => {
+  dropdownSize.value = {
+    width: dropdownOptions.value?.clientWidth || 0,
+    height: dropdownOptions.value?.clientHeight || 0
+  }
+})
+
+const dropDownStyle = computed(() => {
+  return {
+    top: `${clickPosition.value.y + dropdownSize.value.height > window.innerHeight ? window.innerHeight - dropdownSize.value.height - 10 : clickPosition.value.y}px`,
+    left: `${clickPosition.value.x - dropdownSize.value.width < 10 ? 10 : clickPosition.value.x - dropdownSize.value.width}px`
+  }
+})
 
 //@ts-ignore
 onClickOutside(dropdownOptions, () => {
@@ -64,7 +80,7 @@ onClickOutside(dropdownOptions, () => {
 </script>
 
 <template>
-  <div class="flex gap-2 items-center w-auto justify-end" @click="isOpen = true" ref="dropdown">
+  <div class="flex gap-2 items-center w-auto justify-end" @click="onClick">
     <slot></slot>
   </div>
   <Teleport to="#dropdown">

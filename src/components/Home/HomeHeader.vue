@@ -32,6 +32,9 @@ const newListName = ref<string>('')
 
 const listNameInput = ref(null)
 onClickOutside(listNameInput, () => {
+  if (userDataStore.isOwner) {
+    userDataStore.checklistData.listName = newListName.value
+  }
   openNameEdit.value = false
 })
 
@@ -64,24 +67,28 @@ watch(checklistData.value, (newVal) => {
               return name
             })
           "
-          textOnHover
+          :inner-box-class="userDataStore.isOwner ? 'hover:cursor-text' : 'hover:cursor-default'"
           v-model="currentListId"
           @subclick="
             (event) => {
               event.stopPropagation()
-              newListName = userDataStore.checklistData.listName
-              openNameEdit = true
+              if (userDataStore.isOwner) {
+                newListName = userDataStore.checklistData.listName
+                openNameEdit = true
+              }
             }
           "
           disable-unselect
         />
         <PixelTitle
           v-else-if="!openNameEdit"
-          class="hover:cursor-pointer"
+          :class="[userDataStore.isOwner ? 'hover:cursor-pointer' : 'hover:cursor-default']"
           @click="
             () => {
-              newListName = userDataStore.checklistData.listName
-              openNameEdit = true
+              if (userDataStore.isOwner) {
+                newListName = userDataStore.checklistData.listName
+                openNameEdit = true
+              }
             }
           "
           >{{ userDataStore.checklistData.listName }}</PixelTitle
@@ -93,7 +100,9 @@ watch(checklistData.value, (newVal) => {
           placeholder="New List Name"
           @keydown.enter="
             () => {
-              userDataStore.checklistData.listName = newListName
+              if (userDataStore.isOwner) {
+                userDataStore.checklistData.listName = newListName
+              }
               openNameEdit = false
             }
           "

@@ -27,13 +27,17 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
   disableUnselect: {
     type: Boolean,
     default: false
   },
-  textOnHover: {
-    type: Boolean,
-    default: false
+  innerBoxClass: {
+    type: String,
+    default: ''
   }
 })
 
@@ -85,12 +89,14 @@ const valueLabels = computed(
     @update:select-value="setSelectedOption"
     :selected="isAllSelected ? props.options.map((opt) => opt.value) : (modelValue ?? [])"
     :multiple="isMultiple"
+    :disabled="disabled"
   >
-    <div class="flex hover:cursor-pointer w-full">
+    <div :class="['flex w-full', disabled ? 'opacity-50' : '']">
       <div
         :class="[
           'flex gap-2 pixel-sunken-shadow bg-brown-400 p-1 px-2 flex-grow justify-center text-center',
-          textOnHover ? 'hover:cursor-text' : ''
+          innerBoxClass,
+          disabled ? 'cursor-default' : 'cursor-pointer'
         ]"
         @click="(event) => $emit('subclick', event)"
       >
@@ -99,7 +105,7 @@ const valueLabels = computed(
         </PixelText>
         <PixelText v-else class="opacity-40 w-max">{{ placeholder }}</PixelText>
       </div>
-      <PixelButton class="min-w-8 px-2 py-1 rounded-e-full">
+      <PixelButton class="min-w-8 px-2 py-1 rounded-e-full" :disabled="disabled">
         <img :src="dropdownArrow" alt="checkbox x" class="w-full" />
       </PixelButton>
     </div>

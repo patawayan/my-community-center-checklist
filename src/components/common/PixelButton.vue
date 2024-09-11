@@ -32,6 +32,10 @@ defineProps({
     validator(value: string) {
       return Object.keys(buttonType).includes(value)
     }
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 })
 </script>
@@ -40,21 +44,26 @@ defineProps({
   <button
     @click="$emit('click')"
     @keydown.enter="$emit('click')"
-    :class="['p-2 text-2 pixel-shadow', buttonType[type]]"
+    :class="[
+      'p-2 text-2 pixel-shadow',
+      buttonType[type],
+      disabled ? 'cursor-default' : 'cursor-pointer active'
+    ]"
+    :disabled="disabled"
   >
     <PixelText :size="buttonSizes[size]"><slot></slot></PixelText>
   </button>
 </template>
 
 <style scoped>
-button.pixel-shadow:active {
+button.pixel-shadow.active:active {
   filter: unset;
   box-shadow:
     inset 3px -3px 0px 0px #ffffff80,
     inset -3px 3px 0px 0px #00000040;
 }
 
-button.pixel-shadow:active > span {
+button.pixel-shadow.active:active > span {
   display: block;
   transform: translateX(3px);
 }

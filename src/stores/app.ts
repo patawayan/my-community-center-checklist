@@ -126,6 +126,11 @@ export const useAppStore = defineStore('appStore', () => {
     listIds: []
   })
 
+  /**
+   * Check if the current user is the owner of the list
+   */
+  const isOwner = computed(() => userData.userId === checklistData.ownerId)
+
   /** A list of all the locally available checklists' names */
   const listNames = ref<{ value: string; label: string }[]>([])
 
@@ -470,6 +475,37 @@ export const useAppStore = defineStore('appStore', () => {
     const finalBundleItem = copiedBundleItems.flatMap((item) => {
       const localItem = { ...item }
 
+      if (localFarmCaveType.length > 0) {
+        localItem.item.sourceDetails = localItem.item.sourceDetails.flatMap((sourceDetail) => {
+          // Filter out the farm cave sources if the selected farm cave type is not included
+          sourceDetail.sources = sourceDetail.sources.flatMap((source) => {
+            if (
+              localFarmCaveType.length > 0 &&
+              source.__typename === 'Foraging' &&
+              source.locations?.some((location) =>
+                [ForagingLocations.MushroomFarmCave, ForagingLocations.FruitBatFarmCave].includes(
+                  location
+                )
+              )
+            ) {
+              source.locations = source.locations.flatMap((location) => {
+                return (localFarmCaveType.includes(ForagingLocations.MushroomFarmCave) &&
+                  location === ForagingLocations.FruitBatFarmCave) ||
+                  (localFarmCaveType.includes(ForagingLocations.FruitBatFarmCave) &&
+                    location === ForagingLocations.MushroomFarmCave)
+                  ? []
+                  : location
+              })
+              return source.locations.length > 0 ? source : []
+            }
+
+            return source
+          })
+
+          return sourceDetail.sources.length > 0 ? sourceDetail : []
+        })
+      }
+
       const includeItem =
         (searchValue === '' ||
           Sprites[localItem.item.spriteId].name
@@ -481,13 +517,13 @@ export const useAppStore = defineStore('appStore', () => {
           (!statusItems.value[localItem.id] && localStatus.includes(CheckListStatus.ToDo))) &&
         localItem.item.sourceDetails.some(
           (sourceDetail) =>
-            // Filtering items thatare available in the selected seasons
+            // Filtering items that are available in the selected seasons
             (localSeasons.length === 0 ||
               (localSeasons.length === 4
                 ? sourceDetail.seasons.length === 4
                 : sourceDetail.seasons.length < 4 &&
-                  sourceDetail.seasons.some((season) => localSeasons.includes(season)))) &&
-            // Filtering items thatare available in the selected sources
+                  localSeasons.every((season) => sourceDetail.seasons.includes(season)))) &&
+            // Filtering items that are available in the selected sources
             (localSource.length === 0 ||
               sourceDetail.sources.some((source) =>
                 localSource.includes(source.__typename as SourceType)
@@ -499,26 +535,6 @@ export const useAppStore = defineStore('appStore', () => {
       localItem.item.sourceDetails = localItem.item.sourceDetails.flatMap((sourceDetail) => {
         // Filter out the farm cave sources if the selected farm cave type is not included
         sourceDetail.sources = sourceDetail.sources.flatMap((source) => {
-          if (
-            localFarmCaveType.length > 0 &&
-            source.__typename === 'Foraging' &&
-            source.locations?.some((location) =>
-              [ForagingLocations.MushroomFarmCave, ForagingLocations.FruitBatFarmCave].includes(
-                location
-              )
-            )
-          ) {
-            source.locations = source.locations.flatMap((location) => {
-              return (localFarmCaveType.includes(ForagingLocations.MushroomFarmCave) &&
-                location === ForagingLocations.FruitBatFarmCave) ||
-                (localFarmCaveType.includes(ForagingLocations.FruitBatFarmCave) &&
-                  location === ForagingLocations.MushroomFarmCave)
-                ? []
-                : location
-            })
-            return source.locations.length > 0 ? source : []
-          }
-
           // if onlyShowSelectedDetails is true, then we only want to show details that are exclusve to the selected filters
           if (onlyShowSelectedDetails && localSource.length > 0) {
             return localSource.includes(source.__typename as SourceType) ? source : []
@@ -647,6 +663,7 @@ export const useAppStore = defineStore('appStore', () => {
     viewFilters,
     userData,
     listNames,
+    isOwner,
     reloadData,
     loadData,
     setStatus,

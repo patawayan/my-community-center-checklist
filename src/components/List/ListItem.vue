@@ -35,7 +35,6 @@ const { doShowItem, itemStatus, isNotNeeded, itemSprite } = useListItem(props.it
           <img :src="itemSprite.image" alt="dropdown arrow" class="w-full" />
         </div>
         <PixelText v-if="item.quality" size="2xl">{{ item.quality }} Quality </PixelText>
-        {{ doShowItem ? 'true' : 'false' }}
         <PixelText size="2xl" class="flex-grow">{{ itemSprite.name }}</PixelText>
         <PixelText v-if="item.quantity">x {{ item?.quantity }}</PixelText>
       </div>
