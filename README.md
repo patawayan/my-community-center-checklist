@@ -2,7 +2,7 @@
 
 There are a lot of existing community center lists out there, but I always had a few nitpicks with all of them
 
-For my this project, my goal is to have the following features:
+For this project, my goal is to have the following features:
 
 - UI-wise have it have the same aesthetic as Stardew Valley (Done)
 - Automatically crosses off items you don't need to collect anymore (Done)
