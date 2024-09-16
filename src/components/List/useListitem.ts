@@ -1,4 +1,4 @@
-import { Sprites, type RoomBundleItem } from '@/data'
+import { type RoomBundleItem } from '@/data'
 import { Quality } from '@/data/types'
 import { CheckListStatus } from '@/types'
 import { storeToRefs } from 'pinia'
@@ -40,11 +40,6 @@ export const useListItem = (bundleItem: RoomBundleItem) => {
   const isListItemLoading = storeToRefs(userData).isChecklistDataLoading
 
   /**
-   * Get the sprite of the item
-   */
-  const itemSprite = computed(() => Sprites[item.item.spriteId])
-
-  /**
    * No longer needed for their respective bundle
    */
   const isNotNeeded = computed(
@@ -82,7 +77,6 @@ export const useListItem = (bundleItem: RoomBundleItem) => {
 
   return {
     doShowItem,
-    itemSprite,
     isNotNeeded,
     itemStatus,
     isListItemLoading

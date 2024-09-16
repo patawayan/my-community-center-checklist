@@ -21,7 +21,7 @@ defineProps({
     >
       <div
         @click.stop=""
-        class="bg-brown-50 pixel-shadow p-3 min-w-28 absolute z-[1000] flex gap-2 flex-col top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
+        class="bg-brown-50 w-3/4 md:w-auto pixel-shadow p-3 min-w-28 absolute z-[1000] flex gap-2 flex-col top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
       >
         <div class="flex w-full justify-center" v-if="title">
           <PixelTitle size="lg">{{ title }}</PixelTitle>

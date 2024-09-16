@@ -2,9 +2,10 @@
 const textSizes = {
   '2xl': 'text-xl',
   xl: 'text-lg',
-  md: 'text-md',
+  md: 'text-base',
   sm: 'text-sm',
-  xs: 'text-xs'
+  xs: 'text-xs',
+  tag: 'text-sm md:text-base'
 }
 
 export default {}

@@ -29,8 +29,8 @@ defineProps({
 </script>
 
 <template>
-  <div :class="['p-1 pixel-shadow rounded  items-center flex', SourceColors[source]]">
-    <PixelText>{{ source.replace(/([A-Z])/g, ' $1').trim() }}</PixelText>
+  <div :class="['p-1 pixel-shadow rounded  items-center flex text-nowrap', SourceColors[source]]">
+    <PixelText size="tag">{{ source.replace(/([A-Z])/g, ' $1').trim() }}</PixelText>
   </div>
 </template>
 

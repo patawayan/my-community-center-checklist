@@ -39,7 +39,7 @@ defineProps({
     :disabled="disabled"
     @update:select-value="(value) => $emit('update:modelValue', value)"
   >
-    <div :class="['flex gap-2 items-center hover:cursor-pointer', disabled ? 'opacity-50' : '']">
+    <div :class="['flex gap-2 items-center ', disabled ? 'opacity-50' : 'hover:cursor-pointer']">
       <PixelTitle size="xl" :class="[statusColor[modelValue]]" :no-shadow="true">{{
         modelValue
       }}</PixelTitle>

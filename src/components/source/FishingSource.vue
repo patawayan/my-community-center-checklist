@@ -24,18 +24,22 @@ defineProps({
 
 <template>
   <SourceContainer>
-    <div class="flex items-center gap-2">
-      <SourceTag :source="SourceType.Fishing" />
-    </div>
-    <PixelText v-if="detail.locations" class="text-center">{{
-      detail.locations.join(', ')
-    }}</PixelText>
-    <div class="flex gap-2 flex-wrap justify-center">
-      <PixelText v-if="detail.time" class="max-w-52 text-center text-nowrap"
-        >{{ getTime(detail.time.starting) }}
-        {{ detail.time.ending ? '- ' + getTime(detail.time.ending) : undefined }}</PixelText
-      >
-      <PixelText v-if="detail.weather" class="text-center max-w-52">{{ detail.weather }}</PixelText>
+    <div class="flex flex-row md:flex-col gap-2 justify-center items-center">
+      <div class="flex items-center gap-2">
+        <SourceTag :source="SourceType.Fishing" />
+      </div>
+      <PixelText v-if="detail.locations" class="text-center">{{
+        detail.locations.join(', ')
+      }}</PixelText>
+      <div class="flex gap-2 flex-wrap justify-center">
+        <PixelText v-if="detail.time" class="max-w-52 text-center text-nowrap"
+          >{{ getTime(detail.time.starting) }}
+          {{ detail.time.ending ? '- ' + getTime(detail.time.ending) : undefined }}</PixelText
+        >
+        <PixelText v-if="detail.weather" class="text-center max-w-52">{{
+          detail.weather
+        }}</PixelText>
+      </div>
     </div>
   </SourceContainer>
 </template>

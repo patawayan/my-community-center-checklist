@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Sprites } from '@/data'
-import ListItem from '../List/ListItem.vue'
-import ListItemCompact from '../List/ListItemCompact.vue'
+import ListItem from '../List/base/ListItem.vue'
+import ListItemCompact from '../List/compact/ListItemCompact.vue'
 import ModalBody from '../common/ModalBody.vue'
 import { ref } from 'vue'
 import type { Item } from '@/data/types'
@@ -36,6 +36,7 @@ const modalDetailData = ref<Item>()
           }
         "
       />
+
       <ModalBody :is-open="isItemDetailsModalOpen" @close="isItemDetailsModalOpen = false">
         <div v-if="modalDetailData" class="flex flex-col gap-3 p-5">
           <PixelTitle size="xl" class="text-center">Item Details</PixelTitle>

@@ -25,7 +25,7 @@ defineProps({
 
 <template>
   <div :class="['p-2 pixel-shadow rounded', seasonColor[season]]">
-    <PixelTitle>{{ season }}</PixelTitle>
+    <PixelTitle size="tag">{{ season }}</PixelTitle>
   </div>
 </template>
 

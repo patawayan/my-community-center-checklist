@@ -39,15 +39,17 @@ watch(viewFilters.value, (newVal) => {
 </script>
 
 <template>
-  <div class="w-full flex gap-2">
-    <div class="flex flex-col gap-2 basis-1/5 max-w-[20%]">
+  <div class="w-full flex gap-2 flex-col lg:flex-row">
+    <div
+      class="flex flex-row lg:flex-col gap-2 w-full w-full lg:w-auto lg:basis-1/5 lg:max-w-[20%]"
+    >
       <InputCheckbox v-model="userData.viewFilters.isVerboseList" class="max-w-full">
         Show All Details
       </InputCheckbox>
       <InputCheckbox
         v-if="userData.viewFilters.isVerboseList"
         v-model="userData.dataFilters.onlyShowSelectedDetails"
-        class="pl-2 w-full"
+        class="pl-2 md:pl-0 lg:pl-2 w-full"
       >
         Only Show Details Selected
       </InputCheckbox>
@@ -55,8 +57,8 @@ watch(viewFilters.value, (newVal) => {
         Hide Done Items
       </InputCheckbox>
     </div>
-    <div class="flex gap-2 basis-4/5 max-w-[80%]">
-      <div class="flex flex-col gap-2 basis-1/3 max-w-[33%]">
+    <div class="flex gap-2 flex-col-reverse md:flex-row lg:basis-4/5 lg:max-w-[80%]">
+      <div class="flex flex-col gap-2 md:basis-1/3 lg:max-w-[33%]">
         <InputDropdown
           v-model="userData.globalFilters.farmCaveType"
           class="w-full"
@@ -95,7 +97,7 @@ watch(viewFilters.value, (newVal) => {
           placeholder="Status"
         />
       </div>
-      <div class="flex flex-col gap-2 basis-1/3 max-w-[33%]">
+      <div class="flex flex-col gap-2 md:basis-1/3 lg:max-w-[33%]">
         <InputDropdown
           v-model="userData.dataFilters.room"
           class="max-w-full"
@@ -130,7 +132,7 @@ watch(viewFilters.value, (newVal) => {
         />
       </div>
 
-      <div class="flex flex-col gap-2 basis-1/3 max-w-[34%]">
+      <div class="flex flex-col gap-2 md:basis-1/3 lg:max-w-[34%]">
         <InputText
           v-model="searchValue"
           placeholder="Search..."

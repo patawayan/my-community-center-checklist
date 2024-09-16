@@ -7,7 +7,7 @@ For this project, my goal is to have the following features:
 - UI-wise have it have the same aesthetic as Stardew Valley (Done)
 - Automatically crosses off items you don't need to collect anymore (Done)
 - Multiplayer Support (Multiple people can edit the same list at once) (Done)
-- Easy to Read/Mobile friendly (To Do)
+- Easy to Read/Mobile friendly (Done)
 
 ### Project Setup
 

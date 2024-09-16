@@ -7,7 +7,11 @@ const openDevInfo = ref(false)
 </script>
 
 <template>
-  <PixelButton type="secondary" class="absolute bottom-2 left-2" @click="openDevInfo = true">
+  <PixelButton
+    type="secondary"
+    class="absolute bottom-20 md:bottom-2 left-2"
+    @click="openDevInfo = true"
+  >
     dev info
   </PixelButton>
   <ModalBody :is-open="openDevInfo" @close="openDevInfo = false">

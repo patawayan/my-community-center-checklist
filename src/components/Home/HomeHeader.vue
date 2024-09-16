@@ -3,14 +3,11 @@ import PixelTitle from '@/components/common/PixelTitle.vue'
 import PixelButton from '@/components/common/PixelButton.vue'
 import funnelIcon from '@/assets/images/funnel_icon.png'
 import funnelIconX from '@/assets/images/funnel_icon_x.png'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import HomeFilters from './HomeFilters.vue'
 import ModalBody from '../common/ModalBody.vue'
-import InputText from '../common/input/InputText.vue'
-import { onClickOutside } from '@vueuse/core'
-import InputDropdown from '../common/input/InputDropdown.vue'
-import { storeToRefs } from 'pinia'
 import { useAppStore } from '@/stores/app'
+import ChecklistNamesDropdown from '../Header/ChecklistNamesDropdown.vue'
 
 const userDataStore = useAppStore()
 
@@ -26,29 +23,6 @@ const isFilterOpen = ref(
 )
 
 const openNewListModal = ref(false)
-
-const openNameEdit = ref(false)
-const newListName = ref<string>('')
-
-const listNameInput = ref(null)
-onClickOutside(listNameInput, () => {
-  if (userDataStore.isOwner) {
-    userDataStore.checklistData.listName = newListName.value
-  }
-  openNameEdit.value = false
-})
-
-const checklistData = storeToRefs(userDataStore).checklistData
-
-const currentListId = ref<string[]>([checklistData.value.listId ?? ''])
-watch(currentListId, (newVal) => {
-  userDataStore.userData.currentListId = newVal[0]
-  userDataStore.reloadData()
-})
-
-watch(checklistData.value, (newVal) => {
-  currentListId.value = [newVal.listId]
-})
 </script>
 
 <template>
@@ -57,61 +31,14 @@ watch(checklistData.value, (newVal) => {
       <PixelTitle size="2xl">My Community Center Checklist</PixelTitle>
 
       <div class="flex gap-3 w-max items-center">
-        <InputDropdown
-          v-if="userDataStore.listNames.length > 1 && !openNameEdit"
-          :options="
-            userDataStore.listNames.map((name) => {
-              if (name.value === userDataStore.userData.currentListId) {
-                return { label: userDataStore.checklistData.listName, value: name.value }
-              }
-              return name
-            })
-          "
-          :inner-box-class="userDataStore.isOwner ? 'hover:cursor-text' : 'hover:cursor-default'"
-          v-model="currentListId"
-          @subclick="
-            (event) => {
-              event.stopPropagation()
-              if (userDataStore.isOwner) {
-                newListName = userDataStore.checklistData.listName
-                openNameEdit = true
-              }
-            }
-          "
-          disable-unselect
-        />
-        <PixelTitle
-          v-else-if="!openNameEdit"
-          :class="[userDataStore.isOwner ? 'hover:cursor-pointer' : 'hover:cursor-default']"
-          @click="
-            () => {
-              if (userDataStore.isOwner) {
-                newListName = userDataStore.checklistData.listName
-                openNameEdit = true
-              }
-            }
-          "
-          >{{ userDataStore.checklistData.listName }}</PixelTitle
-        >
-        <InputText
-          ref="listNameInput"
-          v-else
-          v-model="newListName"
-          placeholder="New List Name"
-          @keydown.enter="
-            () => {
-              if (userDataStore.isOwner) {
-                userDataStore.checklistData.listName = newListName
-              }
-              openNameEdit = false
-            }
-          "
-        />
+        <ChecklistNamesDropdown class="hidden md:block" />
 
-        <PixelButton @click="userDataStore.createDatabaseList()">
+        <PixelButton @click="userDataStore.createDatabaseList()" class="hidden md:block">
           {{ userDataStore.checklistData.isOnline ? 'Copy Link to List' : 'Play with Friends!' }}
         </PixelButton>
-        <PixelButton @click="openNewListModal = true"> New List! </PixelButton>
+        <PixelButton class="hidden md:block" @click="openNewListModal = true">
+          New List!
+        </PixelButton>
 
         <PixelButton class="w-10" @click="isFilterOpen = !isFilterOpen">
           <img v-if="!isFilterOpen" :src="funnelIcon" alt="filter icon" class="w-full" />

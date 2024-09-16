@@ -27,11 +27,14 @@ defineProps({
 
 <template>
   <div class="relative pt-5">
-    <div class="pt-9 pb-3 px-6 bg-brown-75 pixel-sunken-shadow gap-3 flex">
+    <div
+      class="w-full md:w-auto pt-9 pb-3 px-6 bg-brown-75 pixel-sunken-shadow gap-3 flex flex-col md:flex-row"
+    >
       <div
         v-for="source in detail.sources"
         :key="source.__typename"
         :class="[
+          'w-full',
           detail.seasons.length === 3 ? 'min-w-36' : '',
           detail.seasons.length === 2 ? 'min-w-24' : ''
         ]"

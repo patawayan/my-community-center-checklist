@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import checkboxX from '@/assets/images/checkbox_x.png'
+import PixelText from '../PixelText.vue'
 
 defineEmits(['update:modelValue'])
 
@@ -22,7 +23,9 @@ defineProps({
     >
       <img v-if="modelValue" :src="checkboxX" alt="checkbox x" class="w-full" />
     </div>
-    <slot></slot>
+    <PixelText size="xl">
+      <slot></slot>
+    </PixelText>
   </div>
 </template>
 

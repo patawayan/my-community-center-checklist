@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router'
 import DevInfoModal from '@/components/modal/DevInfoModal.vue'
 import { useAppStore } from '@/stores/app'
 import LoadingComponent from '@/components/common/LoadingComponent.vue'
+import HomeFooter from '@/components/Home/HomeFooter.vue'
 
 const userData = useAppStore()
 const route = useRoute()
@@ -17,6 +18,7 @@ userData.loadData(route.params?.listId?.toString() ?? undefined)
   <main class="flex relative flex-col max-h-screen" @click="(e) => eventBus.emit('listClick', e)">
     <HomeHeader />
     <HomeList class="flex-grow overflow-scroll" @scroll="(e) => eventBus.emit('listScroll', e)" />
+    <HomeFooter />
 
     <LoadingComponent />
     <DevInfoModal />

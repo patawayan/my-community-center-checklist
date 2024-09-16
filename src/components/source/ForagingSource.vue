@@ -18,13 +18,15 @@ defineProps({
 
 <template>
   <SourceContainer>
-    <div class="flex items-center gap-2">
-      <SourceTag :source="SourceType.Foraging" />
+    <div class="flex flex-row md:flex-col gap-2 justify-center items-center">
+      <div class="flex items-center gap-2">
+        <SourceTag :source="SourceType.Foraging" />
+      </div>
+      <PixelText v-if="detail.locations" class="text-center">{{
+        detail.locations.join(', ')
+      }}</PixelText>
+      <PixelText v-if="detail.info" class="max-w-40 text-center">{{ detail.info }}</PixelText>
     </div>
-    <PixelText v-if="detail.locations" class="text-center">{{
-      detail.locations.join(', ')
-    }}</PixelText>
-    <PixelText v-if="detail.info" class="max-w-40 text-center">{{ detail.info }}</PixelText>
   </SourceContainer>
 </template>
 

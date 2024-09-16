@@ -17,10 +17,12 @@ defineProps({
 </script>
 
 <template>
-  <SourceContainer>
-    <SourceTag :source="SourceType.Buying" />
+  <SourceContainer class="flex-row">
+    <div class="flex flex-row md:flex-col gap-2 justify-center items-center">
+      <SourceTag :source="SourceType.Buying" />
 
-    <PixelText v-if="detail.locations">{{ detail.locations.join(', ') }}</PixelText>
+      <PixelText v-if="detail.locations">{{ detail.locations.join(', ') }}</PixelText>
+    </div>
   </SourceContainer>
 </template>
 

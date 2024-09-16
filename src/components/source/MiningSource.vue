@@ -18,17 +18,19 @@ defineProps({
 
 <template>
   <SourceContainer>
-    <div class="flex items-center gap-2">
-      <SourceTag :source="SourceType.Mining" />
-    </div>
-    <div v-for="loc in detail.locations" :key="loc.name" class="flex gap-1">
-      <PixelText>{{ loc.name }}{{ loc.floors ? ',' : undefined }}</PixelText>
-      <span v-if="loc.floors">
-        <PixelText
-          >Floors {{ loc.floors.starting
-          }}{{ loc.floors.ending ? ' - ' + loc.floors.ending : '+' }}</PixelText
-        >
-      </span>
+    <div class="flex flex-row md:flex-col gap-2 justify-center items-center">
+      <div class="flex items-center gap-2">
+        <SourceTag :source="SourceType.Mining" />
+      </div>
+      <div v-for="loc in detail.locations" :key="loc.name" class="flex gap-1">
+        <PixelText>{{ loc.name }}{{ loc.floors ? ',' : undefined }}</PixelText>
+        <span v-if="loc.floors">
+          <PixelText
+            >Floors {{ loc.floors.starting
+            }}{{ loc.floors.ending ? ' - ' + loc.floors.ending : '+' }}</PixelText
+          >
+        </span>
+      </div>
     </div>
   </SourceContainer>
 </template>

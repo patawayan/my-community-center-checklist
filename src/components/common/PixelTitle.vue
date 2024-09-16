@@ -1,11 +1,12 @@
 <script lang="ts">
 const titleSizes = {
-  '2xl': 'text-4xl',
-  xl: 'text-3xl',
+  '2xl': 'text-2xl md:text-4xl',
+  xl: 'lg:text-3xl md:text-2xl text-xl',
   lg: 'text-2xl',
   md: 'text-xl',
   sm: 'text-base',
-  xs: 'text-xs'
+  xs: 'text-xs',
+  tag: 'text-base lg:text-xl'
 }
 
 export default {}

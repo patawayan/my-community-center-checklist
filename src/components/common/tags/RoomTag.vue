@@ -26,7 +26,7 @@ defineProps({
 
 <template>
   <div :class="['p-2 pixel-shadow', roomColor[room]]">
-    <PixelTitle>{{ room }}</PixelTitle>
+    <PixelTitle size="tag">{{ room }}</PixelTitle>
   </div>
 </template>
 

@@ -56,7 +56,7 @@ const BackgroundColor: Record<BundleTypes, string> = {
 
 <template>
   <div :class="['p-2 pixel-shadow', BackgroundColor[bundle]]">
-    <PixelText>{{ bundle }}</PixelText>
+    <PixelText size="tag">{{ bundle }}</PixelText>
   </div>
 </template>
 
