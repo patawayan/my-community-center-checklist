@@ -61,10 +61,7 @@ watch(checklistData.value, (newVal) => {
     />
     <PixelTitle
       v-else-if="!openNameEdit"
-      :class="[
-        'hidden md:flex',
-        userDataStore.isOwner ? 'hover:cursor-pointer' : 'hover:cursor-default'
-      ]"
+      :class="[userDataStore.isOwner ? 'hover:cursor-pointer' : 'hover:cursor-default']"
       @click="
         () => {
           if (userDataStore.isOwner) {
