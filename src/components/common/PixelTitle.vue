@@ -1,6 +1,6 @@
 <script lang="ts">
 const titleSizes = {
-  '2xl': 'text-2xl md:text-4xl',
+  '2xl': 'text-2xl md:text-3xl lg:text-4xl',
   xl: 'lg:text-3xl md:text-2xl text-xl',
   lg: 'text-2xl',
   md: 'text-xl',

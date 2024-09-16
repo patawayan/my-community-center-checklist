@@ -27,7 +27,7 @@ const openNewListModal = ref(false)
 
 <template>
   <header class="bg-brown-100 flex flex-col gap-5 p-5">
-    <div class="flex justify-between w-full">
+    <div class="flex justify-between items-center w-full">
       <PixelTitle size="2xl">My Community Center Checklist</PixelTitle>
 
       <div class="flex gap-3 w-max items-center">
