@@ -19,6 +19,10 @@ defineProps({
   modelValue: {
     type: String as PropType<CheckListStatus>,
     default: CheckListStatus.ToDo
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 })
 </script>
@@ -32,9 +36,10 @@ defineProps({
       }))
     "
     :selected="[modelValue]"
+    :disabled="disabled"
     @update:select-value="(value) => $emit('update:modelValue', value)"
   >
-    <div class="flex gap-2 items-center hover:cursor-pointer">
+    <div :class="['flex gap-2 items-center hover:cursor-pointer', disabled ? 'opacity-50' : '']">
       <PixelTitle size="xl" :class="[statusColor[modelValue]]" :no-shadow="true">{{
         modelValue
       }}</PixelTitle>

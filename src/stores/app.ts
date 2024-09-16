@@ -55,6 +55,9 @@ export const useAppStore = defineStore('appStore', () => {
   const { addAlert } = useAlerts()
   const { copy } = useClipboard()
 
+  const isAppLoading = ref(true)
+  const isChecklistDataLoading = ref(false)
+
   /** Unsubscribe function for check list  */
   const checklistDataUnsubscribe = ref()
   /** Unsubscribe function for check list items */
@@ -329,22 +332,39 @@ export const useAppStore = defineStore('appStore', () => {
   }
 
   /**
+   * Load the online data set and set the local data accordingly
+   * Assumes the userdata.currentListID checklist is already online
+   */
+  const handleOnlineDataSet = async () => {
+    setChecklistData(userData.currentListId)
+    setChecklistItems()
+    setGlobalFilters()
+    await setOnlineList(userData.currentListId)
+  }
+
+  /**
    * Reload the data according to the current list id
    */
   const reloadData = async () => {
     unsubscribeListeners()
 
-    if (await doesChecklistExist(userData.currentListId)) {
-      setOnlineList(userData.currentListId)
-    } else {
-      setChecklistData(userData.currentListId)
+    isAppLoading.value = true
 
-      if (checklistData.isOnline) {
-        checklistData.isOnline = false
-        addAlert('Checklist set to offline', 'List does not exist online')
+    try {
+      if (await doesChecklistExist(userData.currentListId)) {
+        await handleOnlineDataSet()
+      } else {
+        setChecklistData(userData.currentListId)
+
+        if (checklistData.isOnline) {
+          checklistData.isOnline = false
+          addAlert('Checklist set to offline', 'List does not exist online')
+        }
+        setChecklistItems()
+        setGlobalFilters()
       }
-      setChecklistItems()
-      setGlobalFilters()
+    } finally {
+      isAppLoading.value = false
     }
 
     setDataFilters()
@@ -355,42 +375,48 @@ export const useAppStore = defineStore('appStore', () => {
    * load data from local storage and check if online data is available
    */
   const loadData = async (listId?: string) => {
-    const localUserData = getLocalUserData()
+    isAppLoading.value = true
 
-    if (localUserData) {
-      userData.currentListId = localUserData.currentListId
-      userData.userId = localUserData.userId
-      userData.listIds = localUserData.listIds
+    try {
+      const localUserData = getLocalUserData()
 
-      if (listId) {
-        userData.currentListId = listId
-      }
+      if (localUserData) {
+        userData.currentListId = localUserData.currentListId
+        userData.userId = localUserData.userId
+        userData.listIds = localUserData.listIds
 
-      if (await checkIfOnline(userData.currentListId)) {
-        if (!userData.listIds.includes(userData.currentListId)) {
-          userData.listIds.push(userData.currentListId)
+        if (listId) {
+          userData.currentListId = listId
         }
 
-        await setOnlineList(userData.currentListId)
-      } else if (userData.listIds.includes(userData.currentListId)) {
-        reloadData()
-      } else {
-        createNewCheckList()
-      }
-    } else {
-      userData.currentListId = ''
-      userData.userId = generateRandomKey()
-      userData.listIds = []
+        if (await checkIfOnline(userData.currentListId)) {
+          if (!userData.listIds.includes(userData.currentListId)) {
+            userData.listIds.push(userData.currentListId)
+          }
 
-      if (listId) {
-        if (await checkIfOnline(listId)) {
-          await setOnlineList(listId)
+          await handleOnlineDataSet()
+        } else if (userData.listIds.includes(userData.currentListId)) {
+          await reloadData()
         } else {
           createNewCheckList()
         }
       } else {
-        createNewCheckList()
+        userData.currentListId = ''
+        userData.userId = generateRandomKey()
+        userData.listIds = []
+
+        if (listId) {
+          if (await checkIfOnline(listId)) {
+            await setOnlineList(listId)
+          } else {
+            createNewCheckList()
+          }
+        } else {
+          createNewCheckList()
+        }
       }
+    } finally {
+      isAppLoading.value = false
     }
   }
 
@@ -409,14 +435,16 @@ export const useAppStore = defineStore('appStore', () => {
    * @param bundleItem
    * @param status
    */
-  const setStatus = (bundleItem: string, status: CheckListStatus) => {
+  const setStatus = async (bundleItem: string, status: CheckListStatus) => {
     const localStatusItems = { ...statusItems.value, [bundleItem]: { bundleItem, status } }
 
     checklistItems.length = 0
     checklistItems.push(...Object.values(localStatusItems))
     storeLocalChecklistListItem(checklistData.listId, checklistItems)
     if (checklistData.isOnline) {
-      storeOnlineChecklistListItems(checklistData.listId, checklistItems)
+      isChecklistDataLoading.value = true
+      await storeOnlineChecklistListItems(checklistData.listId, checklistItems)
+      isChecklistDataLoading.value = false
     }
   }
 
@@ -635,7 +663,7 @@ export const useAppStore = defineStore('appStore', () => {
   // Save the data filters to local storage when changes are made
   watch(globalFilters, () => {
     storeLocalGlobalFilters(checklistData.listId, globalFilters)
-    if (checklistData.isOnline) {
+    if (!isAppLoading.value && checklistData.isOnline) {
       storeOnlineGlobalFilters(checklistData.listId, globalFilters)
     }
   })
@@ -644,7 +672,7 @@ export const useAppStore = defineStore('appStore', () => {
   watch(checklistData, async () => {
     storeLocalChecklistData(checklistData)
     reloadListNames()
-    if (checklistData.isOnline) {
+    if (!isAppLoading.value && checklistData.isOnline) {
       await storeOnlineChecklistData(checklistData)
     }
   })
@@ -655,6 +683,8 @@ export const useAppStore = defineStore('appStore', () => {
   })
 
   return {
+    isAppLoading,
+    isChecklistDataLoading,
     statusItems,
     checklist,
     checklistData,

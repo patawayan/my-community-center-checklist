@@ -37,6 +37,7 @@ export const useListItem = (bundleItem: RoomBundleItem) => {
   const userData = useAppStore()
   const statusItems = storeToRefs(userData).statusItems
   const completedBundles = storeToRefs(userData).completedBundles
+  const isListItemLoading = storeToRefs(userData).isChecklistDataLoading
 
   /**
    * Get the sprite of the item
@@ -70,7 +71,11 @@ export const useListItem = (bundleItem: RoomBundleItem) => {
 
   // --------------------- Watchers ---------------------
 
-  watch(itemStatus, (value) => userData.setStatus?.(item.id, value))
+  watch(itemStatus, (value) => {
+    if (!userData.isAppLoading) {
+      userData.setStatus?.(item.id, value)
+    }
+  })
   watch(statusItems, (value) => {
     itemStatus.value = value?.[item.id]?.status ?? CheckListStatus.ToDo
   })
@@ -79,6 +84,7 @@ export const useListItem = (bundleItem: RoomBundleItem) => {
     doShowItem,
     itemSprite,
     isNotNeeded,
-    itemStatus
+    itemStatus,
+    isListItemLoading
   }
 }

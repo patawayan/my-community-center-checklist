@@ -16,7 +16,9 @@ const props = defineProps({
   }
 })
 
-const { doShowItem, itemStatus, isNotNeeded, itemSprite } = useListItem(props.item)
+const { doShowItem, itemStatus, isNotNeeded, itemSprite, isListItemLoading } = useListItem(
+  props.item
+)
 </script>
 
 <template>
@@ -46,7 +48,7 @@ const { doShowItem, itemStatus, isNotNeeded, itemSprite } = useListItem(props.it
         />
       </div>
       <div class="basis-1/6 flex justify-end">
-        <StatusDropdown v-model="itemStatus" />
+        <StatusDropdown v-model="itemStatus" :disabled="isListItemLoading" />
       </div>
     </div>
     <div

@@ -18,12 +18,14 @@ jobs:
           echo VITE_FIREBASE_DB_URL=$FIREBASE_DB_URL >> .env
           echo VITE_FIREBASE_PROJECT_ID=$FIREBASE_PROJECT_ID >> .env
           echo VITE_FIREBASE_APP_ID=$FIREBASE_APP_ID >> .env
+          echo VITE_FUNCTION_URL=$FUNCTION_URL >> .env
           cat .env
         env:
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_DB_URL: ${{ secrets.FIREBASE_DB_URL }}
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FUNCTION_URL: ${{ secrets.FUNCTION_URL }}
       - run: npm install && echo '-----Install Done 👌-----' && npm run build-only && echo '-----Build Done 👌-----'
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

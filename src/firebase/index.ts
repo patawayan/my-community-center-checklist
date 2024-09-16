@@ -1,6 +1,7 @@
 import type { Checklist, ChecklistItems, GlobalFilters } from '@/types'
+import { fetchGet, fetchPost } from '@/utils/fetch'
 import { deleteApp, getApp, initializeApp, type FirebaseApp } from 'firebase/app'
-import { child, get, getDatabase, ref, set } from 'firebase/database'
+import { getDatabase, ref } from 'firebase/database'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -38,19 +39,6 @@ const deleteFirebaseApp = () => {
   }
 }
 
-export const doesChecklistExist = async (listId: string) => {
-  const dbRef = ref(getRealtimeDatabase())
-  const snapshot = await get(child(dbRef, `checklist/${listId}`))
-
-  const exists = snapshot.exists()
-
-  if (!exists) {
-    deleteFirebaseApp()
-  }
-
-  return exists
-}
-
 export const getChecklistRef = async (listId: string) => {
   const database = getRealtimeDatabase()
   return ref(database, 'checklist/' + listId)
@@ -66,39 +54,62 @@ export const getGlobalFilterRef = async (listId: string) => {
   return ref(database, 'global-filters/' + listId)
 }
 
-export const storeOnlineChecklistData = async (checkList: Checklist) => {
-  const database = getRealtimeDatabase()
-  set(ref(database, 'checklist/' + checkList.listId), {
-    ...checkList
+// ------------------Calls to service------------------
+
+export const doesChecklistExist = async (listId: string) => {
+  const { exists = false } = await fetchGet(`exist?listId=${listId}`)
+
+  if (!exists) {
+    deleteFirebaseApp()
+  }
+
+  console.log('doesChecklistExist exists:', exists)
+
+  return exists
+}
+
+export const createChecklist = async (
+  checklist: Checklist,
+  checklistItems: ChecklistItems,
+  globalFilters: GlobalFilters
+) => {
+  const response = await fetchPost('create', {
+    checklist,
+    checklistItems,
+    globalFilters
   })
+
+  console.log('createChecklist response:', response)
+}
+
+export const storeOnlineChecklistData = async (checklist: Checklist) => {
+  const response = await fetchPost('checklist', {
+    checklist
+  })
+  console.log('storeOnlineChecklistData response:', response)
 }
 
 export const storeOnlineChecklistListItems = async (
   listId: String,
-  checkListItems: ChecklistItems
+  checklistItems: ChecklistItems
 ) => {
-  const database = getRealtimeDatabase()
-  set(ref(database, 'checklist-items/' + listId), [...checkListItems])
+  console.log('storeOnlineChecklistListItems listId:', checklistItems)
+  const response = await fetchPost('items', {
+    listId,
+    checklistItems
+  })
+
+  console.log('storeOnlineChecklistItemsData response:', response)
 }
 
 export const storeOnlineGlobalFilters = async (
   listId: string | undefined,
   globalFilter: GlobalFilters
 ) => {
-  const database = getRealtimeDatabase()
-  set(ref(database, 'global-filters/' + listId), {
-    ...globalFilter
+  const response = await fetchPost('filters', {
+    listId,
+    globalFilter
   })
-}
 
-export const createChecklist = async (
-  checkList: Checklist,
-  checkListItems: ChecklistItems,
-  globalFilters: GlobalFilters
-) => {
-  const listId = checkList.listId
-
-  storeOnlineChecklistData(checkList)
-  storeOnlineChecklistListItems(listId, checkListItems)
-  storeOnlineGlobalFilters(listId, globalFilters)
+  console.log('storeOnlineGlobalFilters response:', response)
 }
