@@ -55,7 +55,7 @@ const modalDetailData = ref<Item>()
               Sprites[modalDetailData.spriteId].name
             }}</PixelText>
           </div>
-          <div class="flex gap-2 justify-center">
+          <div class="flex flex-col md:flex-row gap-2 justify-center">
             <SourceDetails
               v-for="(detail, index) in modalDetailData.sourceDetails"
               :detail="detail"
