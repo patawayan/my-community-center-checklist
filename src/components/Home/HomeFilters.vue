@@ -39,9 +39,9 @@ watch(viewFilters.value, (newVal) => {
 </script>
 
 <template>
-  <div class="w-full flex gap-2 flex-col lg:flex-row">
+  <div class="w-full flex gap-2 flex-col-reverse md:flex-col lg:flex-row">
     <div
-      class="flex flex-row lg:flex-col gap-2 w-full w-full lg:w-auto lg:basis-1/5 lg:max-w-[20%]"
+      class="flex flex-col md:flex-row lg:flex-col gap-2 w-full lg:w-auto lg:basis-1/5 lg:max-w-[20%]"
     >
       <InputCheckbox v-model="userData.viewFilters.isVerboseList" class="max-w-full">
         Show All Details
