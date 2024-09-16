@@ -29,8 +29,10 @@ watch(currentListId, (newVal) => {
   userDataStore.reloadData()
 })
 
-watch(checklistData.value, (newVal) => {
-  currentListId.value = [newVal.listId]
+watch(checklistData.value, (newVal, oldVal) => {
+  if (newVal.listId !== oldVal.listId) {
+    currentListId.value = [newVal.listId]
+  }
 })
 </script>
 
