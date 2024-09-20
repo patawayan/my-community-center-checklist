@@ -30,7 +30,7 @@ const openDevInfo = ref(false)
 
     <br />
     <a
-      href="https://ko-fi.com/pataway"
+      href="https://ko-fi.com/patadev"
       target="_blank"
       rel="noopener noreferrer"
       class="text-blue-500"
