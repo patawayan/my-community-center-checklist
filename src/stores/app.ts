@@ -285,10 +285,16 @@ export const useAppStore = defineStore('appStore', () => {
    * Check if the current checklist is online, automatically sets the local data to offline if it isnt
    */
   const checkIfOnline = async (listId: string) => {
-    const isOnline = await doesChecklistExist(listId)
-    if (!isOnline) {
-      checklistData.isOnline = false
+    let isOnline = false
+    try {
+      isOnline = await doesChecklistExist(listId)
+      if (!isOnline) {
+        checklistData.isOnline = false
+      }
+    } catch (e) {
+      addAlert(`${e}`, 'Swear the server is down')
     }
+
     return isOnline
   }
 
@@ -350,8 +356,15 @@ export const useAppStore = defineStore('appStore', () => {
 
     isAppLoading.value = true
 
+    let isOnline
     try {
-      if (await doesChecklistExist(userData.currentListId)) {
+      isOnline = await doesChecklistExist(userData.currentListId)
+    } catch (e) {
+      isOnline = false
+    }
+
+    try {
+      if (isOnline) {
         await handleOnlineDataSet()
       } else {
         setChecklistData(userData.currentListId)
@@ -396,6 +409,7 @@ export const useAppStore = defineStore('appStore', () => {
 
           await handleOnlineDataSet()
         } else if (userData.listIds.includes(userData.currentListId)) {
+          console.log('aaaaa')
           await reloadData()
         } else {
           createNewCheckList()
