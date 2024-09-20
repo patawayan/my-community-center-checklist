@@ -462,6 +462,24 @@ export const useAppStore = defineStore('appStore', () => {
   }
 
   /**
+   * Clears the current list
+   * Can only be run by the list owner
+   */
+  const clearCurrentList = async () => {
+    if (isOwner.value) {
+      globalFilters.farmCaveType = []
+
+      checklistItems.length = 0
+      storeLocalChecklistListItem(checklistData.listId, [])
+      if (checklistData.isOnline) {
+        isChecklistDataLoading.value = true
+        await storeOnlineChecklistListItems(checklistData.listId, [])
+        isChecklistDataLoading.value = false
+      }
+    }
+  }
+
+  /**
    * Sort the checklist by status
    */
   const statusSort = (a: RoomBundleItem, b: RoomBundleItem) =>
@@ -712,6 +730,7 @@ export const useAppStore = defineStore('appStore', () => {
     reloadData,
     loadData,
     setStatus,
+    clearCurrentList,
     createNewCheckList,
     createDatabaseList
   }

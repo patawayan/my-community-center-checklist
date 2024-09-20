@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import PixelButton from '@/components/common/PixelButton.vue'
 import { ref } from 'vue'
-import ModalBody from '../common/ModalBody.vue'
 import { useAppStore } from '@/stores/app'
 import ChecklistNamesDropdown from '../Header/ChecklistNamesDropdown.vue'
+import NewListModal from '../modal/NewListModal.vue'
 
 const userDataStore = useAppStore()
 
@@ -21,21 +21,7 @@ const openNewListModal = ref(false)
       <PixelButton @click="openNewListModal = true"> New List! </PixelButton>
     </div>
 
-    <ModalBody :isOpen="openNewListModal" @close="openNewListModal = false" title="New List">
-      <div class="w-full flex flex-col gap-2">
-        <PixelButton
-          @click="
-            () => {
-              userDataStore.createNewCheckList()
-              openNewListModal = false
-            }
-          "
-          >Create a New List (does not affect current list)</PixelButton
-        >
-        <PixelButton type="danger">Clear Current List (cannot be undone!)</PixelButton>
-        <PixelButton type="secondary" @click="openNewListModal = false">Cancel</PixelButton>
-      </div>
-    </ModalBody>
+    <NewListModal :openNewListModal="openNewListModal" @close="openNewListModal = false" />
   </footer>
 </template>
 

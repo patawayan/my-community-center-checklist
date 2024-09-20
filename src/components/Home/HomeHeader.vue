@@ -5,9 +5,9 @@ import funnelIcon from '@/assets/images/funnel_icon.png'
 import funnelIconX from '@/assets/images/funnel_icon_x.png'
 import { ref } from 'vue'
 import HomeFilters from './HomeFilters.vue'
-import ModalBody from '../common/ModalBody.vue'
 import { useAppStore } from '@/stores/app'
 import ChecklistNamesDropdown from '../Header/ChecklistNamesDropdown.vue'
+import NewListModal from '../modal/NewListModal.vue'
 
 const userDataStore = useAppStore()
 
@@ -47,21 +47,7 @@ const openNewListModal = ref(false)
       </div>
     </div>
     <HomeFilters v-if="isFilterOpen" />
-    <ModalBody :isOpen="openNewListModal" @close="openNewListModal = false" title="New List">
-      <div class="w-full flex flex-col gap-2">
-        <PixelButton
-          @click="
-            () => {
-              userDataStore.createNewCheckList()
-              openNewListModal = false
-            }
-          "
-          >Create a New List (does not affect current list)</PixelButton
-        >
-        <PixelButton type="danger">Clear Current List (cannot be undone!)</PixelButton>
-        <PixelButton type="secondary" @click="openNewListModal = false">Cancel</PixelButton>
-      </div>
-    </ModalBody>
+    <NewListModal :openNewListModal="openNewListModal" @close="openNewListModal = false" />
   </header>
 </template>
 
