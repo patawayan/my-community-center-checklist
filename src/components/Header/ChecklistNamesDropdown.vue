@@ -30,7 +30,9 @@ watch(currentListId, (newVal) => {
 })
 
 watch(checklistData.value, (newVal) => {
-  currentListId.value = [newVal.listId]
+  if (!currentListId.value || newVal.listId !== currentListId.value[0]) {
+    currentListId.value = [newVal.listId]
+  }
 })
 </script>
 
