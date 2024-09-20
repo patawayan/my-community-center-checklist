@@ -34,7 +34,7 @@ const { doShowItem, itemStatus, isNotNeeded } = useListItem(props.item)
       />
       <div class="w-full flex gap-5 items-center justify-between lg:justify-center">
         <RoomBundleTag class="lg:basis-[23%]" :item="item" />
-        <SpriteSource
+        <SpriteSourceCompact
           class="basis-3/5 hidden lg:flex"
           :item="item"
           @item-click="$emit('item-click')"
