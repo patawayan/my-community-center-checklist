@@ -409,7 +409,6 @@ export const useAppStore = defineStore('appStore', () => {
 
           await handleOnlineDataSet()
         } else if (userData.listIds.includes(userData.currentListId)) {
-          console.log('aaaaa')
           await reloadData()
         } else {
           createNewCheckList()
