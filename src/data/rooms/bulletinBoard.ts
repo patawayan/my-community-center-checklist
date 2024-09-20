@@ -52,6 +52,9 @@ const FieldResearchBundle: BundleItemBare[] = [
   },
   {
     item: items.chub
+  },
+  {
+    item: items.frozenGeode
   }
 ]
 
