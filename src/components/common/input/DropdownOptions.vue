@@ -90,7 +90,7 @@ onClickOutside(dropdownOptions, () => {
       class="pixel-message-border bg-brown-100 text-brown-500 py-5 flex flex-col fixed z-[1000]"
       :style="dropDownStyle"
     >
-      <div class="w-52 max-h-52 flex flex-col px-5 gap-2 overflow-scroll">
+      <div class="w-52 max-h-52 flex flex-col px-5 gap-2 overflow-scroll no-scrollbar">
         <div
           v-for="(option, index) in options"
           :key="option.value"

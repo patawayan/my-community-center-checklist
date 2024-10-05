@@ -21,7 +21,7 @@ userData.loadData(route.params?.listId?.toString() ?? undefined)
   >
     <HomeHeader />
     <HomeList
-      class="h-0 flex-grow overflow-scroll"
+      class="h-0 flex-grow overflow-scroll no-scrollbar"
       @scroll="(e) => eventBus.emit('listScroll', e)"
     />
 
